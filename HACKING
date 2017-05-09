@@ -4,6 +4,14 @@ Bug tracking system
 Thunar uses the Xfce bug tracking system at http://bugzilla.xfce.org/,
 hosted and maintained by the Xfce project.
 
+Bugs in gtk3 branch to be fixed before merge
+====================
+- "Icons-View" does not show icons
+- Crash on right-click --> rename : GLib-GIO-CRITICAL **: g_dbus_proxy_call_finish_internal: assertion 'error == NULL || *error == NULL' failed
+- Crash on right-click --> sent to --> desktop. Same GLib-GIO-CRITICAL
+- Crash on right-click --> copy + right-click --> paste. Same GLib-GIO-CRITICAL
+- Help-->"About" pic broken
+- remove all warnings (not that urgent)
 
 Patches
 =======
