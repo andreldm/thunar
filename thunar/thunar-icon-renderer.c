@@ -426,68 +426,76 @@ thunar_icon_renderer_render (GtkCellRenderer     *renderer,
   color_lighten = (flags & GTK_CELL_RENDERER_PRELIT) != 0 && icon_renderer->follow_state;
 
   //#######################################################################################
-  // FIXME -- this is a ugly fix for https://github.com/andreldm/thunar/issues/11
-  // This issue should be fixed properly. The bug seems to be timing-related. this fix will just paint the icon twice, which seems to work for most cases
+  // FIXME -- this is just a demonstrator for https://github.com/andreldm/thunar/issues/11
+  // in order to show wired, timing related behavior.
+  // This fix will just paint the icon twice, with some 100 nanos between with, which seems to work fine
   // THis fix ignores any alpha/insensitive settings
   thunar_gdk_cairo_set_source_pixbuf (cr, icon, icon_area.x, icon_area.y);
   gdk_cairo_rectangle (cr, &draw_area);
   cairo_paint(cr);
-  //
-  //#######################################################################################
 
+  struct timespec req={0},rem={0};
+    req.tv_sec=0;
+    req.tv_nsec=100L;
+    nanosleep(&req,&rem);
+
+  thunar_gdk_cairo_set_source_pixbuf (cr, icon, icon_area.x, icon_area.y);
+  gdk_cairo_rectangle (cr, &draw_area);
+  cairo_paint(cr);
   /* check whether the icon is affected by the expose event */
-  if (gdk_rectangle_intersect (&clip_area, &icon_area, &draw_area))
-    {
-      /* use a translucent icon to represent cutted and hidden files to the user */
-      clipboard = thunar_clipboard_manager_get_for_display (gtk_widget_get_display (widget));
-      if (thunar_clipboard_manager_has_cutted_file (clipboard, icon_renderer->file))
-        {
-          /* 50% translucent for cutted files */
-          alpha = 0.50;
-        }
-      else if (thunar_file_is_hidden (icon_renderer->file))
-        {
-          /* 75% translucent for hidden files */
-          alpha = 0.75;
-        }
-      else
-        {
-          alpha = 1.00;
-        }
-      g_object_unref (G_OBJECT (clipboard));
-
-      /* check if we should render an insensitive icon */
-      if (G_UNLIKELY (gtk_widget_get_state (widget) == GTK_STATE_INSENSITIVE || !gtk_cell_renderer_get_sensitive (renderer)))
-        {
-          /* allocate an icon source */
-          icon_source = gtk_icon_source_new ();
-          gtk_icon_source_set_pixbuf (icon_source, icon);
-          gtk_icon_source_set_size_wildcarded (icon_source, FALSE);
-          gtk_icon_source_set_size (icon_source, GTK_ICON_SIZE_SMALL_TOOLBAR);
-
-          /* render the insensitive icon */
-          temp = gtk_style_render_icon (gtk_widget_get_style (widget), icon_source, gtk_widget_get_direction (widget),
-                                        GTK_STATE_INSENSITIVE, -1, widget, "gtkcellrendererpixbuf");
-          g_object_unref (G_OBJECT (icon));
-          icon = temp;
-
-          /* release the icon source */
-          gtk_icon_source_free (icon_source);
-        }
-
-      /* render the invalid parts of the icon */
-      thunar_gdk_cairo_set_source_pixbuf (cr, icon, icon_area.x, icon_area.y);
-      gdk_cairo_rectangle (cr, &draw_area);
-      cairo_paint_with_alpha (cr, alpha);
-
-      /* paint the lighten mask */
-      if (color_lighten)
-        thunar_icon_renderer_color_lighten (cr, widget);
-
-      /* paint the selected mask */
-      if (color_selected)
-        thunar_icon_renderer_color_selected (cr, widget);
-    }
+//  if (gdk_rectangle_intersect (&clip_area, &icon_area, &draw_area))
+//    {
+//      /* use a translucent icon to represent cutted and hidden files to the user */
+//      clipboard = thunar_clipboard_manager_get_for_display (gtk_widget_get_display (widget));
+//      if (thunar_clipboard_manager_has_cutted_file (clipboard, icon_renderer->file))
+//        {
+//          /* 50% translucent for cutted files */
+//          alpha = 0.50;
+//        }
+//      else if (thunar_file_is_hidden (icon_renderer->file))
+//        {
+//          /* 75% translucent for hidden files */
+//          alpha = 0.75;
+//        }
+//      else
+//        {
+//          alpha = 1.00;
+//        }
+//      g_object_unref (G_OBJECT (clipboard));
+//
+//      /* check if we should render an insensitive icon */
+//      if (G_UNLIKELY (gtk_widget_get_state (widget) == GTK_STATE_INSENSITIVE || !gtk_cell_renderer_get_sensitive (renderer)))
+//        {
+//          /* allocate an icon source */
+//          icon_source = gtk_icon_source_new ();
+//          gtk_icon_source_set_pixbuf (icon_source, icon);
+//          gtk_icon_source_set_size_wildcarded (icon_source, FALSE);
+//          gtk_icon_source_set_size (icon_source, GTK_ICON_SIZE_SMALL_TOOLBAR);
+//
+//          /* render the insensitive icon */
+//          temp = gtk_style_render_icon (gtk_widget_get_style (widget), icon_source, gtk_widget_get_direction (widget),
+//                                        GTK_STATE_INSENSITIVE, -1, widget, "gtkcellrendererpixbuf");
+//          g_object_unref (G_OBJECT (icon));
+//          icon = temp;
+//
+//          /* release the icon source */
+//          gtk_icon_source_free (icon_source);
+//        }
+//
+//      /* render the invalid parts of the icon */
+//      thunar_gdk_cairo_set_source_pixbuf (cr, icon, icon_area.x, icon_area.y);
+//      gdk_cairo_rectangle (cr, &draw_area);
+//      cairo_paint_with_alpha (cr, alpha);
+//
+//      /* paint the lighten mask */
+//      if (color_lighten)
+//        thunar_icon_renderer_color_lighten (cr, widget);
+//
+//      /* paint the selected mask */
+//      if (color_selected)
+//        thunar_icon_renderer_color_selected (cr, widget);
+//    }
+  //#######################################################################################
 
   /* release the file's icon */
   g_object_unref (G_OBJECT (icon));
