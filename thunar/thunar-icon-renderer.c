@@ -425,6 +425,16 @@ thunar_icon_renderer_render (GtkCellRenderer     *renderer,
   color_selected = (flags & GTK_CELL_RENDERER_SELECTED) != 0 && icon_renderer->follow_state;
   color_lighten = (flags & GTK_CELL_RENDERER_PRELIT) != 0 && icon_renderer->follow_state;
 
+  //#######################################################################################
+  // FIXME -- this is a ugly fix for https://github.com/andreldm/thunar/issues/11
+  // This issue should be fixed properly. The bug seems to be timing-related. this fix will just paint the icon twice, which seems to work for most cases
+  // THis fix ignores any alpha/insensitive settings
+  thunar_gdk_cairo_set_source_pixbuf (cr, icon, icon_area.x, icon_area.y);
+  gdk_cairo_rectangle (cr, &draw_area);
+  cairo_paint(cr);
+  //
+  //#######################################################################################
+
   /* check whether the icon is affected by the expose event */
   if (gdk_rectangle_intersect (&clip_area, &icon_area, &draw_area))
     {
