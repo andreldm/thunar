@@ -559,7 +559,6 @@ thunar_icon_renderer_render (GtkCellRenderer     *renderer,
                 {
                   /* render the invalid parts of the icon */
                   thunar_gdk_cairo_set_source_pixbuf (cr, emblem, emblem_area.x, emblem_area.y);
-                  gdk_cairo_rectangle (cr, &draw_area);
                   cairo_paint (cr);
 
                   /* paint the lighten mask */
