@@ -425,7 +425,7 @@ thunar_icon_renderer_render (GtkCellRenderer     *renderer,
   color_lighten = (flags & GTK_CELL_RENDERER_PRELIT) != 0 && icon_renderer->follow_state;
 
   /* check whether the icon is affected by the expose event */
-  if (gdk_rectangle_intersect (&clip_area, &icon_area,NULL))
+  if (gdk_rectangle_intersect (&clip_area, &icon_area, NULL))
     {
       /* use a translucent icon to represent cutted and hidden files to the user */
       clipboard = thunar_clipboard_manager_get_for_display (gtk_widget_get_display (widget));
