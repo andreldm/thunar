@@ -59,13 +59,13 @@ thunar_compact_view_class_init (ThunarCompactViewClass *klass)
 
   /* override ThunarAbstractIconView default row spacing */
   gtk_widget_class_install_style_property(gtkwidget_class, g_param_spec_int (
-          "row-spacing", 				//name
-          "row-spacing",				//nick
-          "space between rows in px",	//blurb
-          0,							//min
-          100,							//max
-          0,							//default
-          G_PARAM_READWRITE ));			//flags
+          "row-spacing",                //name
+          "row-spacing",                //nick
+          "space between rows in px",   //blurb
+          0,                            //min
+          100,                          //max
+          0,                            //default
+          G_PARAM_READWRITE));         //flags
 }
 
 
