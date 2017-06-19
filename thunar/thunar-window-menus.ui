@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<!--WIP!-->
+
+	<requires lib="gtk+" version="3.20"/>
+
+	<object class="GtkAccelGroup" id="accel-group"/>
+
+	<object class="GtkMenuBar" id="main-menu">
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<child>
+			<!--File-->
+			<object class="GtkMenuItem">
+				<property name="label" translatable="yes">_File</property>
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="use_underline">True</property>
+				<child type="submenu">
+					<object class="GtkMenu">
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<property name="accel_group">accel-group</property>
+						<property name="accel_path">&lt;ThunarWindow&gt;/File</property>
+						<!--New Tab-->
+						<child>
+							<object class="GtkImageMenuItem">
+								<property name="label" translatable="yes">New _Tab</property>
+								<property name="image">new-tab-image</property>
+								<property name="visible">True</property>
+								<property name="can_focus">False</property>
+								<property name="use_underline">True</property>
+								<property name="always-show-image">True</property>
+								<property name="action-name">win.new-tab</property>
+								<!--tooltip-->
+								<property name="tooltip-text">Open a new tab for the displayed location</property>
+								<property name="has-tooltip">False</property>
+								<signal name="select" handler="menu-item-selected" swapped="no"/>
+								<signal name="deselect" handler="menu-item-deselected" swapped="no"/>
+							</object>
+						</child>
+						<!--New Window-->
+						<child>
+							<object class="GtkImageMenuItem">
+								<property name="label" translatable="yes">New _Window</property>
+								<property name="image">new-window-image</property>
+								<property name="visible">True</property>
+								<property name="can_focus">False</property>
+								<property name="use_underline">True</property>
+								<property name="always-show-image">True</property>
+								<property name="action-name">win.new-window</property>
+								<!--tooltip-->
+								<property name="tooltip-text">Open a new Thunar window for the displayed location</property>
+								<property name="has-tooltip">False</property>
+								<signal name="select" handler="menu-item-selected" swapped="no"/>
+								<signal name="deselect" handler="menu-item-deselected" swapped="no"/>
+							</object>
+						</child>
+					</object>
+				</child>
+			</object>
+		</child>
+	</object>
+
+	<object class="GtkImage" id="new-tab-image">
+		<property name="visible">True</property>
+		<property name="icon-name">tab-new</property>
+	</object>
+	<object class="GtkImage" id="new-window-image">
+		<property name="visible">True</property>
+		<property name="icon-name">window-new</property>
+	</object>
+
+</interface>
