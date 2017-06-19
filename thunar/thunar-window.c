@@ -59,6 +59,7 @@
 #include <thunar/thunar-trash-action.h>
 #include <thunar/thunar-tree-pane.h>
 #include <thunar/thunar-window.h>
+#include <thunar/thunar-window-menus-ui.h>
 #include <thunar/thunar-window-ui.h>
 #include <thunar/thunar-device-monitor.h>
 
