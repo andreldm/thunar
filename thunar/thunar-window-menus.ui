@@ -33,7 +33,7 @@
 								<property name="always-show-image">True</property>
 								<property name="action-name">win.new-tab</property>
 								<!--tooltip-->
-								<property name="tooltip-text">Open a new tab for the displayed location</property>
+								<property translatable="yes" name="tooltip-text">Open a new tab for the displayed location</property>
 								<property name="has-tooltip">False</property>
 								<signal name="select" handler="menu-item-selected" swapped="no"/>
 								<signal name="deselect" handler="menu-item-deselected" swapped="no"/>
@@ -50,7 +50,7 @@
 								<property name="always-show-image">True</property>
 								<property name="action-name">win.new-window</property>
 								<!--tooltip-->
-								<property name="tooltip-text">Open a new Thunar window for the displayed location</property>
+								<property translatable="yes" name="tooltip-text">Open a new Thunar window for the displayed location</property>
 								<property name="has-tooltip">False</property>
 								<signal name="select" handler="menu-item-selected" swapped="no"/>
 								<signal name="deselect" handler="menu-item-deselected" swapped="no"/>
