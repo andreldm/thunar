@@ -114,6 +114,7 @@ static void           thunar_application_set_property           (GObject        
 static void           thunar_application_startup                (GApplication           *application);
 static void           thunar_application_shutdown               (GApplication           *application);
 static void           thunar_application_activate               (GApplication           *application);
+static void           thunar_application_handle_hangup_signal   (ThunarApplication      *application);
 static int            thunar_application_handle_local_options   (GApplication           *application,
                                                                  GVariantDict           *options);
 static int            thunar_application_command_line           (GApplication           *application,
@@ -269,6 +270,9 @@ thunar_application_init (ThunarApplication *application)
   application->progress_dialog = NULL;
   application->preferences     = NULL;
 
+  /* required in order to have a clean thunar_application_shutdown on session-logout in daemon-mode */
+  g_unix_signal_add (SIGHUP, thunar_application_handle_hangup_signal, application);
+
   g_application_set_flags (G_APPLICATION (application), G_APPLICATION_HANDLES_COMMAND_LINE);
   g_application_add_main_option_entries (G_APPLICATION (application), option_entries);
 }
@@ -410,6 +414,14 @@ thunar_application_finalize (GObject *object)
    * in GApplication::shutdown. Therefore, this method doesn't do very much */
 
   (*G_OBJECT_CLASS (thunar_application_parent_class)->finalize) (object);
+}
+
+
+
+static void
+thunar_application_handle_hangup_signal (ThunarApplication *application)
+{
+  thunar_application_set_daemon (application, FALSE);
 }
 
 
