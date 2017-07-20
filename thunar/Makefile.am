@@ -37,6 +37,7 @@ thunar_built_sources =							\
 	thunar-thumbnailer-proxy.h					\
 	thunar-thumbnail-cache-proxy.h 					\
 	thunar-thumbnail-cache-proxy.c					\
+	thunar-window-menus-ui.h					\
 	thunar-window-ui.h
 
 
@@ -315,6 +316,9 @@ thunar-renamer-dialog-ui.h: Makefile $(srcdir)/thunar-renamer-dialog-ui.xml
 
 thunar-standard-view-ui.h: Makefile $(srcdir)/thunar-standard-view-ui.xml
 	$(AM_V_GEN) exo-csource --strip-comments --strip-content --static --name=thunar_standard_view_ui $(srcdir)/thunar-standard-view-ui.xml > thunar-standard-view-ui.h
+
+thunar-window-menus-ui.h: Makefile $(srcdir)/thunar-window-menus.ui
+	$(AM_V_GEN) exo-csource --strip-comments --strip-content --static --name=thunar_window_menus_ui $(srcdir)/thunar-window-menus.ui > thunar-window-menus-ui.h
 
 thunar-window-ui.h: Makefile $(srcdir)/thunar-window-ui.xml
 	$(AM_V_GEN) exo-csource --strip-comments --strip-content --static --name=thunar_window_ui $(srcdir)/thunar-window-ui.xml > thunar-window-ui.h
