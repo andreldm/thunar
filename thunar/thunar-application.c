@@ -326,8 +326,12 @@ thunar_application_dbus_name_lost_cb (GDBusConnection *connection,
                                       const gchar     *name,
                                       gpointer         user_data)
 {
-  g_log (NULL,G_LOG_LEVEL_WARNING,"Lost (or failed to acquire) the name '%s' on the session message bus\n",name);
+  g_critical (_("Name '%s' lost on the message dbus, exiting."), name);
+  ThunarApplication *application = user_data;
+  g_application_quit (G_APPLICATION(application));
 }
+
+
 
 /* TODO: [GTK3 Port] Check if there's a cleaner way to register */
 /* this extra dbus name (besides org.xfce.Thunar) */
