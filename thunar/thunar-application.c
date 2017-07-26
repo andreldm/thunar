@@ -297,7 +297,7 @@ thunar_application_dbus_acquired_cb (GDBusConnection *conn,
                                      gpointer         user_data)
 {
   ThunarApplication *application = user_data;
-  g_log (NULL,G_LOG_LEVEL_DEBUG,"Acquired the session message bus '%s'\n",name);
+  g_log (NULL, G_LOG_LEVEL_DEBUG, _("Acquired the session message bus '%s'\n"), name);
 
 //  fdb->skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
 //  g_signal_connect (fdb->skeleton, "handle-show-items",
@@ -316,7 +316,7 @@ thunar_application_name_acquired_cb (GDBusConnection *connection,
                                      const gchar     *name,
                                      gpointer         user_data)
 {
-    g_log (NULL,G_LOG_LEVEL_DEBUG,"Acquired the name '%s' on the session message bus\n",name);
+    g_log (NULL, G_LOG_LEVEL_DEBUG, _("Acquired the name '%s' on the session message bus\n"), name);
 }
 
 
