@@ -44,6 +44,8 @@
 #include <gudev/gudev.h>
 #endif
 
+#include <glib-unix.h>
+
 #include <libxfce4ui/libxfce4ui.h>
 
 #include <thunar/thunar-application.h>
@@ -112,6 +114,17 @@ static void           thunar_application_set_property           (GObject        
                                                                  guint                   prop_id,
                                                                  const GValue           *value,
                                                                  GParamSpec             *pspec);
+static void           thunar_application_init                   (ThunarApplication *application);
+static void           thunar_application_dbus_acquired_cb       (GDBusConnection *conn,
+                                                                 const gchar     *name,
+                                                                 gpointer         user_data);
+static void           thunar_application_name_acquired_cb       (GDBusConnection *connection,
+                                                                 const gchar     *name,
+                                                                 gpointer         user_data);
+static void           thunar_application_dbus_name_lost_cb      (GDBusConnection *connection,
+                                                                 const gchar     *name,
+                                                                 gpointer         user_data);
+static void           thunar_application_dbus_init              (ThunarApplication *application);
 static void           thunar_application_startup                (GApplication           *application);
 static void           thunar_application_shutdown               (GApplication           *application);
 static void           thunar_application_activate               (GApplication           *application);
@@ -281,18 +294,59 @@ thunar_application_init (ThunarApplication *application)
 }
 
 
+static void
+thunar_application_dbus_acquired_cb (GDBusConnection *conn,
+                                     const gchar     *name,
+                                     gpointer         user_data)
+{
+  ThunarApplication *application = user_data;
+  g_log (NULL, G_LOG_LEVEL_DEBUG, _("Acquired the session message bus '%s'\n"), name);
+
+//  fdb->skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
+//  g_signal_connect (fdb->skeleton, "handle-show-items",
+//                      G_CALLBACK (skeleton_handle_show_items_cb), fdb);
+//  g_signal_connect (fdb->skeleton, "handle-show-folders",
+//                      G_CALLBACK (skeleton_handle_show_folders_cb), fdb);
+//  g_signal_connect (fdb->skeleton, "handle-show-item-properties",
+//                      G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
+//  g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fdb->skeleton), conn, NAUTILUS_FDO_DBUS_PATH, NULL);
+}
+
+
+
+static void
+thunar_application_name_acquired_cb (GDBusConnection *connection,
+                                     const gchar     *name,
+                                     gpointer         user_data)
+{
+    g_log (NULL, G_LOG_LEVEL_DEBUG, _("Acquired the name '%s' on the session message bus\n"), name);
+}
+
+
+
+static void
+thunar_application_dbus_name_lost_cb (GDBusConnection *connection,
+                                      const gchar     *name,
+                                      gpointer         user_data)
+{
+  g_critical (_("Name '%s' lost on the message dbus, exiting."), name);
+  ThunarApplication *application = user_data;
+  g_application_quit (G_APPLICATION(application));
+}
+
+
 
 /* TODO: [GTK3 Port] Check if there's a cleaner way to register */
 /* this extra dbus name (besides org.xfce.Thunar) */
 static void
-thunar_dbus_init (ThunarApplication *application)
+thunar_application_dbus_init (ThunarApplication *application)
 {
     application->dbus_owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
                                "org.xfce.FileManager",
                                G_BUS_NAME_OWNER_FLAGS_NONE,
-                               NULL,
-                               NULL,
-                               NULL,
+                               thunar_application_dbus_acquired_cb,
+                               thunar_application_name_acquired_cb,
+                               thunar_application_dbus_name_lost_cb,
                                application,
                                NULL);
 }
@@ -340,7 +394,7 @@ thunar_application_startup (GApplication *gapp)
   /* connect to the session manager */
   application->session_client = thunar_session_client_new (opt_sm_client_id);
 
-  thunar_dbus_init (application);
+  thunar_application_dbus_init (application);
 
   G_APPLICATION_CLASS (thunar_application_parent_class)->startup (gapp);
 }
