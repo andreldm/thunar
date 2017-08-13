@@ -842,7 +842,6 @@ thunar_location_button_new (void)
 static void
 thunar_location_button_active_changed (ThunarLocationButton *location_button)
 {
-  printf("thunar_location_button_active_changed %s\n", thunar_file_get_display_name (location_button->file));
   _thunar_return_if_fail (THUNAR_IS_LOCATION_BUTTON (location_button));
 
   gboolean active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (location_button));
@@ -935,7 +934,6 @@ thunar_location_button_set_file (ThunarLocationButton *location_button,
 void
 thunar_location_button_clicked (ThunarLocationButton *location_button)
 {
-  printf("thunar_location_button_clicked\n");
   _thunar_return_if_fail (THUNAR_IS_LOCATION_BUTTON (location_button));
   g_signal_emit (G_OBJECT (location_button), location_button_signals[CLICKED], 0, FALSE);
 }
