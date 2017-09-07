@@ -8,3 +8,6 @@ Terminal=false
 Type=Application
 Categories=XFCE;GTK;Settings;DesktopSettings;X-XFCE-SettingsDialog;X-XFCE-PersonalSettings;
 StartupNotify=true
+X-XfcePluggable=true
+X-XfceHelpComponent=thunar
+X-XfceHelpPage=preferences
