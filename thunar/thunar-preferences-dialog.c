@@ -221,7 +221,7 @@ thunar_preferences_dialog_init (ThunarPreferencesDialog *dialog)
 
   /* configure the dialog properties */
   gtk_window_set_icon_name (GTK_WINDOW (dialog), "system-file-manager");
-  gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+  gtk_window_set_default_size (GTK_WINDOW (dialog), 400, -1);
   gtk_window_set_title (GTK_WINDOW (dialog), _("File Manager Preferences"));
 
   /* add "Help" and "Close" buttons */
@@ -508,8 +508,9 @@ thunar_preferences_dialog_init (ThunarPreferencesDialog *dialog)
   gtk_grid_attach (GTK_GRID (grid), ibox, 0, 1, 1, 1);
   gtk_widget_show (ibox);
 
-  label = gtk_label_new_with_mnemonic (_("Specify the d_elay before an item gets selected\n"
+  label = gtk_label_new_with_mnemonic (_("Specify the d_elay before an item gets selected "
                                          "when the mouse pointer is paused over it:"));
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
   gtk_label_set_xalign (GTK_LABEL (label), 0.0f);
   gtk_label_set_yalign (GTK_LABEL (label), 0.0f);
   gtk_box_pack_start (GTK_BOX (ibox), label, FALSE, FALSE, 0);
@@ -614,9 +615,10 @@ thunar_preferences_dialog_init (ThunarPreferencesDialog *dialog)
   gtk_container_add (GTK_CONTAINER (frame), grid);
   gtk_widget_show (grid);
 
-  label = gtk_label_new_with_mnemonic (_("When changing the permissions of a folder, you\n"
-                                         "can also apply the changes to the contents of the\n"
+  label = gtk_label_new_with_mnemonic (_("When changing the permissions of a folder, you "
+                                         "can also apply the changes to the contents of the "
                                          "folder. Select the default behavior below:"));
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
   gtk_label_set_xalign (GTK_LABEL (label), 0.0f);
   gtk_label_set_yalign (GTK_LABEL (label), 0.0f);
   gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);
@@ -662,8 +664,9 @@ thunar_preferences_dialog_init (ThunarPreferencesDialog *dialog)
   gtk_label_set_xalign (GTK_LABEL (label), 0.0f);
   exo_binding_new (G_OBJECT (button), "active", G_OBJECT (label), "sensitive");
   g_signal_connect_swapped (G_OBJECT (label), "activate-link", G_CALLBACK (thunar_preferences_dialog_configure), dialog);
-  gtk_label_set_markup (GTK_LABEL (label), _("<a href=\"volman-config:\">Configure</a> the management of removable drives\n"
+  gtk_label_set_markup (GTK_LABEL (label), _("<a href=\"volman-config:\">Configure</a> the management of removable drives"
                                              "and media (i.e. how cameras should be handled)."));
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
   gtk_widget_set_hexpand (label, TRUE);
   gtk_grid_attach (GTK_GRID (grid), label, 0, 1, 1, 1);
   gtk_widget_show (label);

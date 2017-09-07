@@ -32,6 +32,8 @@
 
 #include <glib/gstdio.h>
 
+#include <gtk/gtkx.h>
+
 #include <exo/exo.h>
 
 #include <thunar/thunar-application.h>
@@ -122,6 +124,7 @@ static gboolean thunar_dbus_service_display_preferences_dialog  (ThunarDBusFileM
                                                                  GDBusMethodInvocation  *invocation,
                                                                  const gchar            *display,
                                                                  const gchar            *startup_id,
+                                                                 const gint             *socket_id,
                                                                  ThunarDBusService      *dbus_service);
 static gboolean thunar_dbus_service_display_trash               (ThunarDBusTrash        *object,
                                                                  GDBusMethodInvocation  *invocation,
@@ -687,31 +690,59 @@ thunar_dbus_service_display_preferences_dialog (ThunarDBusFileManager  *object,
                                                 GDBusMethodInvocation  *invocation,
                                                 const gchar            *display,
                                                 const gchar            *startup_id,
+                                                const gint             *socket_id,
                                                 ThunarDBusService      *dbus_service)
 {
   ThunarApplication *application;
   GdkScreen         *screen;
   GtkWidget         *dialog;
   GError            *error = NULL;
+  GtkWidget         *plug, *plug_child;
 
-  /* try to open the screen for the display name */
-  screen = thunar_gdk_screen_open (display, &error);
-  if (G_UNLIKELY (screen == NULL))
-    goto out;
+  if (G_UNLIKELY (socket_id == 0))
+    {
+      /* try to open the screen for the display name */
+      screen = thunar_gdk_screen_open (display, &error);
+      if (G_UNLIKELY (screen == NULL))
+        goto out;
 
-  /* popup the preferences dialog... */
-  dialog = thunar_preferences_dialog_new (NULL);
-  gtk_window_set_screen (GTK_WINDOW (dialog), screen);
-  gtk_window_set_startup_id (GTK_WINDOW (dialog), startup_id);
-  gtk_widget_show (GTK_WIDGET (dialog));
+      /* popup the preferences dialog... */
+      dialog = thunar_preferences_dialog_new (NULL);
+      gtk_window_set_screen (GTK_WINDOW (dialog), screen);
+      gtk_window_set_startup_id (GTK_WINDOW (dialog), startup_id);
+      gtk_widget_show (GTK_WIDGET (dialog));
 
-  /* ...and let the application take care of it */
-  application = thunar_application_get ();
-  thunar_application_take_window (application, GTK_WINDOW (dialog));
-  g_object_unref (G_OBJECT (application));
+      /* ...and let the application take care of it */
+      application = thunar_application_get ();
+      thunar_application_take_window (application, GTK_WINDOW (dialog));
+      g_object_unref (G_OBJECT (application));
 
-  /* cleanup */
-  g_object_unref (G_OBJECT (screen));
+      /* cleanup */
+      g_object_unref (G_OBJECT (screen));
+    }
+  else
+    {
+      /* Create plug widget */
+      plug = gtk_plug_new (socket_id);
+      g_signal_connect (plug, "delete-event", G_CALLBACK (gtk_main_quit), NULL);
+      gtk_widget_show (plug);
+
+      /* Stop startup notification */
+      gdk_notify_startup_complete ();
+
+      /* Get plug child widget */
+      dialog = thunar_preferences_dialog_new (NULL);
+      plug_child = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+      xfce_widget_reparent (GTK_WIDGET (plug_child), plug);
+      gtk_widget_show (GTK_WIDGET (plug_child));
+
+      /* To prevent the settings dialog to be saved in the session */
+      gdk_x11_set_sm_client_id ("FAKE ID");
+
+      /* Enter main loop */
+      gtk_main ();
+      // FIXME: Should the dialog be freed?
+    }
 
 out:
   if (error)

@@ -4,9 +4,18 @@
 
 test "x$DISPLAY" != "x" || DISPLAY=:0
 
+if [ $(echo "$1" | grep -o "=" | wc -l) -eq 1 ]; then
+  OPT_SOCKET_ID=$(echo $1 | cut -f1 -d=)
+  if [ "$OPT_SOCKET_ID" = "--socket-id" ]; then
+    SOCKET_ID=$(echo $1 | cut -f2 -d=)
+  fi
+fi
+
+test "x$SOCKET_ID" != "x" || SOCKET_ID=0
+
 output=`dbus-send --session --print-reply --dest=org.xfce.FileManager \
   /org/xfce/FileManager org.xfce.FileManager.DisplayPreferencesDialog \
-  "string:$DISPLAY" "string:$DESKTOP_STARTUP_ID"`
+  "string:$DISPLAY" "string:$DESKTOP_STARTUP_ID" "int32:$SOCKET_ID"`
 
 if ! [ $? -eq 0 ]; then
   echo $output

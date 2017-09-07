@@ -150,16 +150,19 @@
 
 
     <!--
-      DisplayPreferencesDialog (display : STRING, startup_id : STRING) : VOID
+      DisplayPreferencesDialog (display : STRING, startup_id : STRING, socket_id : INT32) : VOID
 
       display    : the screen on which to display the preferences dialog
                    or "" to use the default screen of the file manager.
       startup_id : the DESKTOP_STARTUP_ID environment variable for properly
                    handling startup notification and focus stealing.
+      startup_id : the socket id to plug preferences dialog into settings
+                   manager window.
     -->
     <method name="DisplayPreferencesDialog">
       <arg direction="in" name="display" type="s" />
       <arg direction="in" name="startup_id" type="s" />
+      <arg direction="in" name="socket_id" type="i" />
     </method>
 
 
