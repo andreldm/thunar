@@ -1991,6 +1991,56 @@ thunar_standard_view_get_drop_file (ThunarStandardView *standard_view,
 
 
 static void
+add_extension_menu_items (ThunarStandardView *standard_view,
+                          GList *items,
+                          const gchar *path)
+{
+  GList           *lp;
+  GtkAction       *action;
+
+  /* add the menu items to the UI manager */
+  for (lp = items; lp != NULL; lp = lp->next)
+    {
+      ThunarxMenu *menu;
+
+      g_object_get (G_OBJECT (lp->data), "menu", &menu, NULL);
+      action = thunar_util_action_from_menu_item (G_OBJECT (lp->data));
+
+      /* add the action to the action group */
+      gtk_action_group_add_action (standard_view->priv->custom_actions, action);
+
+      /* add the action to the UI manager */
+      gtk_ui_manager_add_ui (standard_view->ui_manager,
+                              standard_view->priv->custom_merge_id,
+                              path,
+                              gtk_action_get_name (GTK_ACTION (action)),
+                              gtk_action_get_name (GTK_ACTION (action)),
+                              (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM, FALSE);
+
+      if (menu != NULL) {
+        char *subdir;
+        GList *children;
+
+        children = thunarx_menu_get_items (menu);
+
+        subdir = g_build_path ("/", path, gtk_action_get_name (action), NULL);
+        add_extension_menu_items (standard_view,
+                                  children,
+                                  subdir);
+
+        thunarx_menu_item_list_free (children);
+        g_free (subdir);
+      }
+
+      /* release the reference on item and action */
+      g_object_unref (G_OBJECT (lp->data));
+      g_object_unref (G_OBJECT (action));
+    }
+}
+
+
+
+static void
 thunar_standard_view_merge_custom_actions (ThunarStandardView *standard_view,
                                            GList              *selected_items)
 {
@@ -2003,6 +2053,7 @@ thunar_standard_view_merge_custom_actions (ThunarStandardView *standard_view,
   GList           *tmp;
   GList           *lp;
   GtkAction       *action;
+  gchar           *path;
 
   /* we cannot add anything if we aren't connected to any UI manager */
   if (G_UNLIKELY (standard_view->ui_manager == NULL))
@@ -2075,40 +2126,18 @@ thunar_standard_view_merge_custom_actions (ThunarStandardView *standard_view,
       standard_view->priv->custom_merge_id = gtk_ui_manager_new_merge_id (standard_view->ui_manager);
       gtk_ui_manager_insert_action_group (standard_view->ui_manager, standard_view->priv->custom_actions, -1);
 
-      /* add the menu items to the UI manager */
-      for (lp = items; lp != NULL; lp = lp->next)
+      if (G_LIKELY (selected_items != NULL))
         {
-          action = thunar_util_action_from_menu_item (G_OBJECT (lp->data));
-
-          /* add the action to the action group */
-          gtk_action_group_add_action (standard_view->priv->custom_actions, action);
-
-          /* add the action to the UI manager */
-          if (G_LIKELY (selected_items != NULL))
-            {
-              /* add to the file context menu */
-              gtk_ui_manager_add_ui (standard_view->ui_manager,
-                                     standard_view->priv->custom_merge_id,
-                                     "/file-context-menu/placeholder-custom-actions",
-                                     gtk_action_get_name (GTK_ACTION (action)),
-                                     gtk_action_get_name (GTK_ACTION (action)),
-                                     GTK_UI_MANAGER_MENUITEM, FALSE);
-            }
-          else
-            {
-              /* add to the folder context menu */
-              gtk_ui_manager_add_ui (standard_view->ui_manager,
-                                     standard_view->priv->custom_merge_id,
-                                     "/folder-context-menu/placeholder-custom-actions",
-                                     gtk_action_get_name (GTK_ACTION (action)),
-                                     gtk_action_get_name (GTK_ACTION (action)),
-                                     GTK_UI_MANAGER_MENUITEM, FALSE);
-            }
-
-          /* release the reference on item and action */
-          g_object_unref (G_OBJECT (lp->data));
-          g_object_unref (G_OBJECT (action));
+          /* add to the file context menu */
+          path = "/file-context-menu/placeholder-custom-actions";
         }
+      else
+        {
+          /* add to the folder context menu */
+          path = "/folder-context-menu/placeholder-custom-actions";
+        }
+
+      add_extension_menu_items (standard_view, items, path);
 
       /* be sure to update the UI manager to avoid flickering */
       gtk_ui_manager_ensure_update (standard_view->ui_manager);
