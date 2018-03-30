@@ -2,6 +2,11 @@ iconsdir = $(datadir)/icons/hicolor/scalable/apps
 icons_DATA =								\
 	Thunar.svg
 
+stockdir = $(datadir)/icons/hicolor/scalable/actions
+stock_DATA =								\
+	thunar-folder-move-symbolic.svg			\
+	thunar-folder-copy-symbolic.svg
+
 EXTRA_DIST =								\
 	$(icons_DATA)
 
