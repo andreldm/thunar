@@ -154,7 +154,7 @@ thunar_progress_dialog_shown (ThunarProgressDialog *dialog)
   /* show the status icon */
   if (dialog->status_icon == NULL)
     {
-      dialog->status_icon = gtk_status_icon_new_from_icon_name ("stock_folder-copy");
+      dialog->status_icon = gtk_status_icon_new_from_icon_name ("thunar-folder-copy");
       thunar_progress_dialog_update_status_icon (dialog);
       g_signal_connect_swapped (dialog->status_icon, "button-press-event",
                                 G_CALLBACK (thunar_progress_dialog_toggled),

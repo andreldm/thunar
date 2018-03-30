@@ -4,8 +4,8 @@ icons_DATA =								\
 
 stockdir = $(datadir)/icons/hicolor/24x24/stock/navigation
 stock_DATA =								\
-	stock_folder-copy.png						\
-	stock_folder-move.png
+	thunar-folder-move.png					\
+	thunar-folder-copy.png
 
 EXTRA_DIST =								\
 	$(icons_DATA)							\

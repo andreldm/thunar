@@ -575,7 +575,7 @@ thunar_dialogs_show_job_ask_replace (GtkWindow  *parent,
   gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), grid, TRUE, TRUE, 0);
   gtk_widget_show (grid);
 
-  image = gtk_image_new_from_icon_name ("stock_folder-copy", GTK_ICON_SIZE_BUTTON);
+  image = gtk_image_new_from_icon_name ("thunar-folder-copy", GTK_ICON_SIZE_BUTTON);
   gtk_widget_set_halign (image, GTK_ALIGN_CENTER);
   gtk_widget_set_valign (image, GTK_ALIGN_START);
   gtk_widget_set_margin_start (GTK_WIDGET(image), 6);
