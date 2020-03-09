@@ -25,99 +25,19 @@
 G_BEGIN_DECLS;
 
 
-typedef enum
-{
-  THUNAR_GTK_MENU_ITEM,
-  THUNAR_GTK_IMAGE_MENU_ITEM,
-  THUNAR_GTK_CHECK_MENU_ITEM,
-  THUNAR_GTK_RADIO_MENU_ITEM,
-} ThunarGtkMenuItem;
-
-typedef struct
-{
-  /* unique identifier for instances of this structure */
-  guint             id;
-
-  const gchar      *accel_path;
-  const gchar      *default_accelerator;
-
-  /* menu_item data is optional, only relevant if there exists a menu_item for that accelerator */
-  ThunarGtkMenuItem menu_item_type;
-  gchar            *menu_item_label_text;
-  gchar            *menu_item_tooltip_text;
-  const gchar      *menu_item_icon_name;
-
-  GCallback       callback;
-} ThunarGtkActionEntry;
-
 void             thunar_gtk_label_set_a11y_relation           (GtkLabel           *label,
                                                                GtkWidget          *widget);
-GtkWidget       *thunar_gtk_menu_item_new                  (const gchar        *label_text,
-                                                               const gchar *tooltip_text,
-                                                               const gchar *accel_path,
-                                                               GCallback    callback,
-                                                               GObject     *callback_param,
-                                                               GtkMenuShell       *menu_to_append_item);
-GtkWidget       *thunar_gtk_image_menu_item_new            (const gchar        *label_text,
-                                                               const gchar        *tooltip_text,
-                                                               const gchar        *accel_path,
-                                                               GCallback           callback,
-                                                               GObject            *callback_param,
-                                                               GtkWidget          *image,
-                                                               GtkMenuShell       *menu_to_append_item);
-GtkWidget       *thunar_gtk_image_menu_item_new_from_icon_name (const gchar *label_text,
-                                                                   const gchar *tooltip_text,
-                                                                   const gchar *accel_path,
-                                                                   GCallback    callback,
-                                                                   GObject     *callback_param,
-                                                                   const gchar *icon_name,
-                                                                   GtkMenuShell       *menu_to_append_item);
-GtkWidget       *thunar_gtk_menu_thunarx_menu_item_new     (GObject            *thunarx_menu_item,
-                                                               GtkMenuShell  *menu_to_append_item);
-GtkWidget       *thunar_gtk_check_menu_item_new            (const gchar        *label_text,
-                                                               const gchar        *tooltip_text,
-                                                               const gchar        *accel_path,
-                                                               GCallback           callback,
-                                                               GObject            *callback_param,
-                                                               gboolean      active,
-                                                               GtkMenuShell       *menu_to_append_item);
-GtkWidget       *thunar_gtk_radio_menu_item_new            (const gchar        *label_text,
-                                                               const gchar        *tooltip_text,
-                                                               const gchar        *accel_path,
-                                                               GCallback           callback,
-                                                               GObject            *callback_param,
-                                                               gboolean      active,
-                                                               GtkMenuShell       *menu_to_append_item);
-GtkWidget       *thunar_gtk_menu_item_new_from_action_entry(ThunarGtkActionEntry *action_entry,
-                                                               GObject              *callback_param,
-                                                               GtkMenuShell         *menu_to_append_item);
-GtkWidget       *thunar_gtk_toggle_menu_item_new_from_action_entry(ThunarGtkActionEntry *action_entry,
-                                                               GObject              *callback_param,
-                                                               gboolean      active,
-                                                               GtkMenuShell         *menu_to_append_item);
-void             thunar_gtk_menu_append_seperator             (GtkMenuShell            *menu);
 void             thunar_gtk_menu_run                          (GtkMenu            *menu);
 
 void             thunar_gtk_menu_run_at_event                 (GtkMenu            *menu,
                                                                GdkEvent           *event);
-GtkWidget       *thunar_gtk_tool_button_new_from_action_entry (GtkToolbar           *toolbar,
-                                                                     ThunarGtkActionEntry *action_entry,
-                                                                     GObject              *callback_param);
 void             thunar_gtk_widget_set_tooltip                (GtkWidget          *widget,
                                                                const gchar        *format,
                                                                ...) G_GNUC_PRINTF (2, 3);
+GtkWidget       *thunar_gtk_menu_thunarx_menu_item_new        (GObject            *thunarx_menu_item,
+                                                               GtkMenuShell       *menu_to_append_item);
 
 GMountOperation *thunar_gtk_mount_operation_new               (gpointer            parent);
-
-GtkAccelGroup   *thunar_gtk_accel_group_append                (GtkAccelGroup              *accel_group,
-                                                               const ThunarGtkActionEntry *action_entries,
-                                                               guint                       n_action_entries,
-                                                               gpointer                    callback_data);
-ThunarGtkActionEntry* thunar_gtk_get_action_entry_by_id       (ThunarGtkActionEntry       *action_entries,
-                                                               guint                       n_action_entries,
-                                                               guint                       id);
-void                  thunar_gtk_translate_action_entries     (ThunarGtkActionEntry       *action_entries,
-                                                               guint                       n_action_entries);
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 

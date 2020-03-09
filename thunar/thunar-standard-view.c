@@ -334,14 +334,14 @@ struct _ThunarStandardViewPrivate
   GtkTreePath            *selection_before_delete;
 };
 
-static ThunarGtkActionEntry thunar_standard_view_action_entries[] =
+static XfceGtkActionEntry thunar_standard_view_action_entries[] =
 {
-    { THUNAR_STANDARD_VIEW_ACTION_SELECT_ALL_FILES,  "<Actions>/ThunarStandardView/select-all-files",   "<Primary>a", THUNAR_GTK_MENU_ITEM, N_ ("Select _all Files"),     N_ ("Select all files in this window"),                   NULL, G_CALLBACK (thunar_standard_view_select_all_files), },
-    { THUNAR_STANDARD_VIEW_ACTION_SELECT_BY_PATTERN, "<Actions>/ThunarStandardView/select-by-pattern",  "<Primary>s", THUNAR_GTK_MENU_ITEM, N_ ("Select _by Pattern..."), N_ ("Select all files that match a certain pattern"),     NULL, G_CALLBACK (thunar_standard_view_select_by_pattern), },
-    { THUNAR_STANDARD_VIEW_ACTION_INVERT_SELECTION,  "<Actions>/ThunarStandardView/invert-selection",   "",           THUNAR_GTK_MENU_ITEM, N_ ("_Invert Selection"),     N_ ("Select all files but not those currently selected"), NULL, G_CALLBACK (thunar_standard_view_selection_invert), },
+    { THUNAR_STANDARD_VIEW_ACTION_SELECT_ALL_FILES,  "<Actions>/ThunarStandardView/select-all-files",   "<Primary>a", XFCE_GTK_MENU_ITEM, N_ ("Select _all Files"),     N_ ("Select all files in this window"),                   NULL, G_CALLBACK (thunar_standard_view_select_all_files), },
+    { THUNAR_STANDARD_VIEW_ACTION_SELECT_BY_PATTERN, "<Actions>/ThunarStandardView/select-by-pattern",  "<Primary>s", XFCE_GTK_MENU_ITEM, N_ ("Select _by Pattern..."), N_ ("Select all files that match a certain pattern"),     NULL, G_CALLBACK (thunar_standard_view_select_by_pattern), },
+    { THUNAR_STANDARD_VIEW_ACTION_INVERT_SELECTION,  "<Actions>/ThunarStandardView/invert-selection",   "",           XFCE_GTK_MENU_ITEM, N_ ("_Invert Selection"),     N_ ("Select all files but not those currently selected"), NULL, G_CALLBACK (thunar_standard_view_selection_invert), },
 };
 
-#define get_action_entry(id) thunar_gtk_get_action_entry_by_id(thunar_standard_view_action_entries,G_N_ELEMENTS(thunar_standard_view_action_entries),id)
+#define get_action_entry(id) xfce_gtk_get_action_entry_by_id(thunar_standard_view_action_entries,G_N_ELEMENTS(thunar_standard_view_action_entries),id)
 
 /* Target types for dragging from the view */
 static const GtkTargetEntry drag_targets[] =
@@ -392,7 +392,7 @@ thunar_standard_view_class_init (ThunarStandardViewClass *klass)
   gtkwidget_class->grab_focus = thunar_standard_view_grab_focus;
   gtkwidget_class->draw = thunar_standard_view_draw;
 
-  thunar_gtk_translate_action_entries (thunar_standard_view_action_entries, G_N_ELEMENTS (thunar_standard_view_action_entries));
+  xfce_gtk_translate_action_entries (thunar_standard_view_action_entries, G_N_ELEMENTS (thunar_standard_view_action_entries));
 
   /**
    * ThunarStandardView:loading:
@@ -3435,7 +3435,7 @@ thunar_standard_view_context_menu (ThunarStandardView *standard_view)
                                             | THUNAR_MENU_SECTION_EMPTY_TRASH
                                             | THUNAR_MENU_SECTION_CUSTOM_ACTIONS);
       thunar_standard_view_append_menu_items (standard_view, GTK_MENU (context_menu), NULL);
-      thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (context_menu));
+      xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (context_menu));
       thunar_menu_add_sections (context_menu,  THUNAR_MENU_SECTION_ZOOM
                                              | THUNAR_MENU_SECTION_PROPERTIES);
     }
@@ -3620,7 +3620,7 @@ thunar_standard_view_append_menu_item (ThunarStandardView      *standard_view,
 {
   _thunar_return_if_fail (THUNAR_IS_STANDARD_VIEW (standard_view));
 
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (action), G_OBJECT (standard_view), GTK_MENU_SHELL (menu));
+  xfce_gtk_menu_item_new_from_action_entry (get_action_entry (action), G_OBJECT (standard_view), GTK_MENU_SHELL (menu));
 }
 
 
@@ -3630,7 +3630,7 @@ thunar_standard_view_append_accelerators  (ThunarStandardView *standard_view, Gt
 {
   _thunar_return_if_fail (THUNAR_IS_STANDARD_VIEW (standard_view));
 
-  thunar_gtk_accel_group_append (accel_group, thunar_standard_view_action_entries, G_N_ELEMENTS (thunar_standard_view_action_entries), standard_view);
+  xfce_gtk_accel_group_append (accel_group, thunar_standard_view_action_entries, G_N_ELEMENTS (thunar_standard_view_action_entries), standard_view);
 
   /* as well append accelerators of derived widgets */
   (*THUNAR_STANDARD_VIEW_GET_CLASS (standard_view)->append_accelerators) (standard_view, accel_group);

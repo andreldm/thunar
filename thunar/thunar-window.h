@@ -25,6 +25,8 @@
 #include <thunar/thunar-gtk-extensions.h>
 #include <thunar/thunar-launcher.h>
 
+#include <libxfce4ui/libxfce4ui.h>
+
 G_BEGIN_DECLS;
 
 typedef struct _ThunarWindowClass ThunarWindowClass;
@@ -121,7 +123,7 @@ void            thunar_window_append_menu_item      (ThunarWindow       *window,
 ThunarLauncher* thunar_window_get_launcher           (ThunarWindow      *window);
 void            thunar_window_redirect_menu_tooltips_to_statusbar (ThunarWindow *window,
                                                                    GtkMenu *menu);
-ThunarGtkActionEntry* thunar_window_get_action_entry  (ThunarWindow       *window,
+XfceGtkActionEntry* thunar_window_get_action_entry  (ThunarWindow       *window,
                                                       ThunarWindowAction  action);
 G_END_DECLS;
 

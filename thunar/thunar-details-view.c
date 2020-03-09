@@ -131,12 +131,12 @@ struct _ThunarDetailsView
 
 
 
-static ThunarGtkActionEntry thunar_details_view_action_entries[] =
+static XfceGtkActionEntry thunar_details_view_action_entries[] =
 {
-    { THUNAR_DETAILS_VIEW_ACTION_CONFIGURE_COLUMNS, "<Actions>/ThunarStandardView/configure-columns", "", THUNAR_GTK_MENU_ITEM , N_ ("Configure _Columns..."), N_("Configure the columns in the detailed list view"), NULL, G_CALLBACK (thunar_show_column_editor), },
+    { THUNAR_DETAILS_VIEW_ACTION_CONFIGURE_COLUMNS, "<Actions>/ThunarStandardView/configure-columns", "", XFCE_GTK_MENU_ITEM , N_ ("Configure _Columns..."), N_("Configure the columns in the detailed list view"), NULL, G_CALLBACK (thunar_show_column_editor), },
 };
 
-#define get_action_entry(id) thunar_gtk_get_action_entry_by_id(thunar_details_view_action_entries,G_N_ELEMENTS(thunar_details_view_action_entries),id)
+#define get_action_entry(id) xfce_gtk_get_action_entry_by_id(thunar_details_view_action_entries,G_N_ELEMENTS(thunar_details_view_action_entries),id)
 
 
 G_DEFINE_TYPE (ThunarDetailsView, thunar_details_view, THUNAR_TYPE_STANDARD_VIEW)
@@ -173,7 +173,7 @@ thunar_details_view_class_init (ThunarDetailsViewClass *klass)
   thunarstandard_view_class->append_accelerators = thunar_details_view_append_accelerators;
   thunarstandard_view_class->zoom_level_property_name = "last-details-view-zoom-level";
 
-  thunar_gtk_translate_action_entries (thunar_details_view_action_entries, G_N_ELEMENTS (thunar_details_view_action_entries));
+  xfce_gtk_translate_action_entries (thunar_details_view_action_entries, G_N_ELEMENTS (thunar_details_view_action_entries));
 
   /**
    * ThunarDetailsView:fixed-columns:
@@ -935,7 +935,7 @@ thunar_details_view_append_accelerators  (ThunarStandardView *standard_view,
 
   _thunar_return_if_fail (THUNAR_IS_DETAILS_VIEW (details_view));
 
-  thunar_gtk_accel_group_append (accel_group, thunar_details_view_action_entries, G_N_ELEMENTS (thunar_details_view_action_entries), details_view);
+  xfce_gtk_accel_group_append (accel_group, thunar_details_view_action_entries, G_N_ELEMENTS (thunar_details_view_action_entries), details_view);
 }
 
 
@@ -949,7 +949,7 @@ thunar_details_view_append_menu_items (ThunarStandardView *standard_view,
 
   _thunar_return_if_fail (THUNAR_IS_DETAILS_VIEW (details_view));
 
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_DETAILS_VIEW_ACTION_CONFIGURE_COLUMNS), G_OBJECT (details_view), GTK_MENU_SHELL (menu));
+  xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_DETAILS_VIEW_ACTION_CONFIGURE_COLUMNS), G_OBJECT (details_view), GTK_MENU_SHELL (menu));
 }
 
 

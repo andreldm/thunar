@@ -186,15 +186,15 @@ struct _ThunarRenamerDialog
 
 
 
-static ThunarGtkActionEntry thunar_renamer_action_entries[] =
+static XfceGtkActionEntry thunar_renamer_action_entries[] =
 {
-    { THUNAR_RENAMER_ACTION_ADD_FILES,    "<Actions>/ThunarRenamerDialog/add-files",    "", THUNAR_GTK_IMAGE_MENU_ITEM, N_ ("_Add Files..."), N_ ("Include additional files in the list of files to be renamed"), "list-add",    G_CALLBACK (thunar_renamer_dialog_action_add_files),   },
-    { THUNAR_RENAMER_ACTION_REMOVE_FILES, "<Actions>/ThunarRenamerDialog/remove-files", "", THUNAR_GTK_IMAGE_MENU_ITEM, NULL,                 NULL,                                                               "list-remove", G_CALLBACK (thunar_renamer_dialog_action_remove_files),},
-    { THUNAR_RENAMER_ACTION_CLEAR,        "",                                           "", THUNAR_GTK_IMAGE_MENU_ITEM, N_ ("Clear"),         N_ ("Clear the file list below"),                                   "edit-clear",  G_CALLBACK (thunar_renamer_dialog_action_clear),       },
-    { THUNAR_RENAMER_ACTION_ABOUT,        "",                                           "", THUNAR_GTK_IMAGE_MENU_ITEM, N_ ("_About"),        N_ ("Display information about Thunar Bulk Rename"),                "help-about",  G_CALLBACK (thunar_renamer_dialog_action_about),       },
+    { THUNAR_RENAMER_ACTION_ADD_FILES,    "<Actions>/ThunarRenamerDialog/add-files",    "", XFCE_GTK_IMAGE_MENU_ITEM, N_ ("_Add Files..."), N_ ("Include additional files in the list of files to be renamed"), "list-add",    G_CALLBACK (thunar_renamer_dialog_action_add_files),   },
+    { THUNAR_RENAMER_ACTION_REMOVE_FILES, "<Actions>/ThunarRenamerDialog/remove-files", "", XFCE_GTK_IMAGE_MENU_ITEM, NULL,                 NULL,                                                               "list-remove", G_CALLBACK (thunar_renamer_dialog_action_remove_files),},
+    { THUNAR_RENAMER_ACTION_CLEAR,        "",                                           "", XFCE_GTK_IMAGE_MENU_ITEM, N_ ("Clear"),         N_ ("Clear the file list below"),                                   "edit-clear",  G_CALLBACK (thunar_renamer_dialog_action_clear),       },
+    { THUNAR_RENAMER_ACTION_ABOUT,        "",                                           "", XFCE_GTK_IMAGE_MENU_ITEM, N_ ("_About"),        N_ ("Display information about Thunar Bulk Rename"),                "help-about",  G_CALLBACK (thunar_renamer_dialog_action_about),       },
 };
 
-#define get_action_entry(id) thunar_gtk_get_action_entry_by_id(thunar_renamer_action_entries,G_N_ELEMENTS(thunar_renamer_action_entries),id)
+#define get_action_entry(id) xfce_gtk_get_action_entry_by_id(thunar_renamer_action_entries,G_N_ELEMENTS(thunar_renamer_action_entries),id)
 
 /* Target types for dropping to the tree view */
 static const GtkTargetEntry drop_targets[] =
@@ -332,7 +332,7 @@ thunar_renamer_dialog_init (ThunarRenamerDialog *renamer_dialog)
   /* allocate a new bulk rename model */
   renamer_dialog->model = thunar_renamer_model_new ();
 
-  thunar_gtk_translate_action_entries (thunar_renamer_action_entries, G_N_ELEMENTS (thunar_renamer_action_entries));
+  xfce_gtk_translate_action_entries (thunar_renamer_action_entries, G_N_ELEMENTS (thunar_renamer_action_entries));
 
   /* determine the list of available renamers (using the renamer providers) */
   provider_factory = thunarx_provider_factory_get_default ();
@@ -369,16 +369,16 @@ thunar_renamer_dialog_init (ThunarRenamerDialog *renamer_dialog)
 
   /* add the toolbar to the dialog */
   toolbar = gtk_toolbar_new ();
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ADD_FILES), G_OBJECT (renamer_dialog));
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_REMOVE_FILES), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ADD_FILES), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_REMOVE_FILES), G_OBJECT (renamer_dialog));
   seperator = gtk_separator_tool_item_new ();
   gtk_container_add (GTK_CONTAINER (toolbar), GTK_WIDGET (seperator));
   gtk_widget_show (GTK_WIDGET (seperator));
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_CLEAR), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_CLEAR), G_OBJECT (renamer_dialog));
   seperator = gtk_separator_tool_item_new ();
   gtk_container_add (GTK_CONTAINER (toolbar), GTK_WIDGET (seperator));
   gtk_widget_show (GTK_WIDGET (seperator));
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog));
   exo_binding_new (G_OBJECT (renamer_dialog), "standalone", G_OBJECT (toolbar), "visible");
   gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (renamer_dialog))), toolbar, FALSE, FALSE, 0);
 
@@ -833,7 +833,7 @@ thunar_renamer_dialog_append_menu_item (ThunarRenamerDialog *renamer_dialog,
 {
   gchar                  *label_text;
   gchar                  *tooltip_text;
-  ThunarGtkActionEntry   *action_entry;
+  XfceGtkActionEntry   *action_entry;
   GtkWidget              *item;
 
   _thunar_return_val_if_fail (THUNAR_IS_RENAMER_DIALOG (renamer_dialog), NULL);
@@ -845,12 +845,12 @@ thunar_renamer_dialog_append_menu_item (ThunarRenamerDialog *renamer_dialog,
         label_text = ngettext ("Remove File", "Remove Files", g_list_length (renamer_dialog->selected_files));
         tooltip_text = ngettext ("Remove the selected file from the list of files to be renamed",
                                  "Remove the selected files from the list of files to be renamed", g_list_length (renamer_dialog->selected_files));
-        item = thunar_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path, action_entry->callback,
+        item = xfce_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path, action_entry->callback,
                                                                  G_OBJECT (renamer_dialog), action_entry->menu_item_icon_name, GTK_MENU_SHELL (menu) );
         gtk_widget_set_sensitive (item, renamer_dialog->selected_files != NULL);
         return item;
       default:
-      return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (renamer_dialog), menu);
+      return xfce_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (renamer_dialog), menu);
     }
   return NULL;
 }
@@ -891,12 +891,12 @@ thunar_renamer_dialog_context_menu (ThunarRenamerDialog *renamer_dialog)
           for(lp = items; lp != NULL; lp = lp->next)
               thunar_gtk_menu_thunarx_menu_item_new (lp->data, GTK_MENU_SHELL (menu));
           g_list_free (items);
-          thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+          xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
         }
     }
   thunar_renamer_dialog_append_menu_item (renamer_dialog, GTK_MENU_SHELL (menu), THUNAR_RENAMER_ACTION_ADD_FILES);
   thunar_renamer_dialog_append_menu_item (renamer_dialog, GTK_MENU_SHELL (menu), THUNAR_RENAMER_ACTION_REMOVE_FILES);
-  thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+  xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
   thunar_menu_add_sections (menu, THUNAR_MENU_SECTION_PROPERTIES);
 
   thunar_menu_run (menu);

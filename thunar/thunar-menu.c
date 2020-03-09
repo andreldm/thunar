@@ -228,13 +228,13 @@ thunar_menu_add_sections (ThunarMenu         *menu,
   if (menu_sections & THUNAR_MENU_SECTION_OPEN)
     {
       if (thunar_launcher_append_open_section (menu->launcher, GTK_MENU_SHELL (menu), !menu->tab_support_disabled, !menu->change_directory_support_disabled, menu->force_section_open))
-         thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+         xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
 
   if (menu_sections & THUNAR_MENU_SECTION_SENDTO)
     {
       thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_SENDTO_MENU);
-      thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+      xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
   if (menu_sections & THUNAR_MENU_SECTION_CREATE_NEW_FILES)
     {
@@ -242,7 +242,7 @@ thunar_menu_add_sections (ThunarMenu         *menu,
       item_added |= (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_CREATE_FOLDER) != NULL);
       item_added |= (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_CREATE_DOCUMENT) != NULL);
       if (item_added)
-         thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+         xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
   item_added = FALSE;
   if (menu_sections & THUNAR_MENU_SECTION_CUT)
@@ -253,7 +253,7 @@ thunar_menu_add_sections (ThunarMenu         *menu,
       item_added |= (thunar_launcher_append_paste_item (menu->launcher, GTK_MENU_SHELL (menu), menu->force_show_paste) != NULL);
     }
   if (item_added)
-     thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+     xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
 
   if (menu_sections & THUNAR_MENU_SECTION_TRASH_DELETE)
     {
@@ -261,17 +261,17 @@ thunar_menu_add_sections (ThunarMenu         *menu,
       item_added |= (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_MOVE_TO_TRASH) != NULL);
       item_added |= (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_DELETE) != NULL);
       if (item_added)
-         thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+         xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
   if (menu_sections & THUNAR_MENU_SECTION_EMPTY_TRASH)
     {
       if (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_EMPTY_TRASH) != NULL )
-         thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+         xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
   if (menu_sections & THUNAR_MENU_SECTION_RESTORE)
     {
       if (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_RESTORE) != NULL)
-         thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+         xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
 
   item_added = FALSE;
@@ -282,12 +282,12 @@ thunar_menu_add_sections (ThunarMenu         *menu,
   if (menu_sections & THUNAR_MENU_SECTION_RENAME)
     item_added |= (thunar_launcher_append_menu_item (menu->launcher, GTK_MENU_SHELL (menu), THUNAR_LAUNCHER_ACTION_RENAME) != NULL);
   if (item_added)
-     thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+     xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
 
   if (menu_sections & THUNAR_MENU_SECTION_CUSTOM_ACTIONS)
     {
       if (thunar_launcher_append_custom_actions (menu->launcher, GTK_MENU_SHELL (menu)))
-         thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+         xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
     }
 
   if (menu_sections & THUNAR_MENU_SECTION_ZOOM)
@@ -298,7 +298,7 @@ thunar_menu_add_sections (ThunarMenu         *menu,
           thunar_window_append_menu_item (THUNAR_WINDOW (window), GTK_MENU_SHELL (menu), THUNAR_WINDOW_ACTION_ZOOM_IN);
           thunar_window_append_menu_item (THUNAR_WINDOW (window), GTK_MENU_SHELL (menu), THUNAR_WINDOW_ACTION_ZOOM_OUT);
           thunar_window_append_menu_item (THUNAR_WINDOW (window), GTK_MENU_SHELL (menu), THUNAR_WINDOW_ACTION_ZOOM_RESET);
-          thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
+          xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
         }
     }
 
