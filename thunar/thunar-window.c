@@ -631,19 +631,19 @@ thunar_window_init (ThunarWindow *window)
 
   /* build the menubar */
   window->menubar = gtk_menu_bar_new ();
-  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_FILE_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (window->menubar));
+  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_FILE_MENU), G_OBJECT (window), GTK_MENU_SHELL (window->menubar));
   g_signal_connect_swapped (G_OBJECT (item), "select", G_CALLBACK (thunar_window_create_file_menu), window);
   g_signal_connect_swapped (G_OBJECT (item), "deselect", G_CALLBACK (thunar_window_destroy_menu), window);
-  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_EDIT_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (window->menubar));
+  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_EDIT_MENU), G_OBJECT (window), GTK_MENU_SHELL (window->menubar));
   g_signal_connect_swapped (G_OBJECT (item), "select", G_CALLBACK (thunar_window_create_edit_menu), window);
   g_signal_connect_swapped (G_OBJECT (item), "deselect", G_CALLBACK (thunar_window_destroy_menu), window);
-  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (window->menubar));
+  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_MENU), G_OBJECT (window), GTK_MENU_SHELL (window->menubar));
   g_signal_connect_swapped (G_OBJECT (item), "select", G_CALLBACK (thunar_window_create_view_menu), window);
   g_signal_connect_swapped (G_OBJECT (item), "deselect", G_CALLBACK (thunar_window_destroy_menu), window);
-  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_GO_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (window->menubar));
+  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_GO_MENU), G_OBJECT (window), GTK_MENU_SHELL (window->menubar));
   g_signal_connect_swapped (G_OBJECT (item), "select", G_CALLBACK (thunar_window_create_go_menu), window);
   g_signal_connect_swapped (G_OBJECT (item), "deselect", G_CALLBACK (thunar_window_destroy_menu), window);
-  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_HELP_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (window->menubar));
+  item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_HELP_MENU), G_OBJECT (window), GTK_MENU_SHELL (window->menubar));
   g_signal_connect_swapped (G_OBJECT (item), "select", G_CALLBACK (thunar_window_create_help_menu), window);
   g_signal_connect_swapped (G_OBJECT (item), "deselect", G_CALLBACK (thunar_window_destroy_menu), window);
 
@@ -733,10 +733,10 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   gtk_widget_set_hexpand (window->location_toolbar, TRUE);
   gtk_grid_attach (GTK_GRID (window->grid), window->location_toolbar, 0, 1, 1, 1);
 
-  window->location_toolbar_item_back = thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_BACK), G_OBJECT (window), FALSE);
-  window->location_toolbar_item_forward = thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window), FALSE);
-  window->location_toolbar_item_parent = thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window), FALSE);
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window), TRUE);
+  window->location_toolbar_item_back = thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_BACK), G_OBJECT (window));
+  window->location_toolbar_item_forward = thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window));
+  window->location_toolbar_item_parent = thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window));
+  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window));
   g_signal_connect (G_OBJECT (window->location_toolbar_item_back), "button-press-event", G_CALLBACK (thunar_window_history_clicked), G_OBJECT (window));
   g_signal_connect (G_OBJECT (window->location_toolbar_item_forward), "button-press-event", G_CALLBACK (thunar_window_history_clicked), G_OBJECT (window));
   window->signal_handler_id_history_changed = 0;
@@ -848,6 +848,7 @@ static void
 thunar_window_create_file_menu (ThunarWindow *window, GtkWidget *menu)
 {
   ThunarMenu *submenu;
+  GtkWidget  *item;
 
   _thunar_return_if_fail (THUNAR_IS_WINDOW (window));
 
@@ -856,8 +857,8 @@ thunar_window_create_file_menu (ThunarWindow *window, GtkWidget *menu)
     {
       submenu = g_object_new (THUNAR_TYPE_MENU, "launcher",              window->launcher, NULL);
       gtk_menu_set_accel_group (GTK_MENU (submenu), window->accel_group);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_NEW_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_NEW_WINDOW), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_NEW_TAB), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_NEW_WINDOW), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
       thunar_menu_add_sections (submenu, THUNAR_MENU_SECTION_OPEN
                                        | THUNAR_MENU_SECTION_SENDTO
@@ -866,11 +867,11 @@ thunar_window_create_file_menu (ThunarWindow *window, GtkWidget *menu)
                                        | THUNAR_MENU_SECTION_CUSTOM_ACTIONS
                                        | THUNAR_MENU_SECTION_PROPERTIES);
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_DETACH_TAB), G_OBJECT (window),
-                                                 gtk_notebook_get_n_pages (GTK_NOTEBOOK (window->notebook)) > 1, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_ALL_WINDOWS), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_WINDOW), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_DETACH_TAB), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      gtk_widget_set_sensitive (item, gtk_notebook_get_n_pages (GTK_NOTEBOOK (window->notebook)) > 1);
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_ALL_WINDOWS), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_TAB), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_WINDOW), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
@@ -928,7 +929,7 @@ thunar_window_create_edit_menu (ThunarWindow *window,
               g_list_free (items);
             }
         }
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_PREFERENCES), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_PREFERENCES), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
@@ -958,52 +959,52 @@ thunar_window_create_view_menu (ThunarWindow *window,
     {
       submenu = g_object_new (THUNAR_TYPE_MENU, "launcher", window->launcher, NULL);
       gtk_menu_set_accel_group (GTK_MENU (submenu), window->accel_group);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_RELOAD), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_RELOAD), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_LOCATION_SELECTOR_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_LOCATION_SELECTOR_MENU), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       sub_items =  gtk_menu_new();
       gtk_menu_set_accel_group (GTK_MENU (sub_items), window->accel_group);
       g_object_get (window->preferences, "last-location-bar", &last_location_bar, NULL);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_LOCATION_SELECTOR_PATHBAR),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_location_bar, g_type_name (THUNAR_TYPE_LOCATION_ENTRY)), GTK_MENU_SHELL (sub_items));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_LOCATION_SELECTOR_TOOLBAR),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_location_bar, g_type_name (THUNAR_TYPE_LOCATION_BUTTONS)), GTK_MENU_SHELL (sub_items));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_LOCATION_SELECTOR_PATHBAR),
+                                                     G_OBJECT (window), exo_str_is_equal (last_location_bar, g_type_name (THUNAR_TYPE_LOCATION_ENTRY)), GTK_MENU_SHELL (sub_items));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_LOCATION_SELECTOR_TOOLBAR),
+                                                     G_OBJECT (window), exo_str_is_equal (last_location_bar, g_type_name (THUNAR_TYPE_LOCATION_BUTTONS)), GTK_MENU_SHELL (sub_items));
       g_free (last_location_bar);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (sub_items));
       gtk_widget_show (item);
-      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_MENU), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_MENU), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       sub_items =  gtk_menu_new();
       gtk_menu_set_accel_group (GTK_MENU (sub_items), window->accel_group);
       g_object_get (window->preferences, "last-side-pane", &last_side_pane, NULL);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_SHORTCUTS),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_side_pane, g_type_name (THUNAR_TYPE_SHORTCUTS_PANE)), GTK_MENU_SHELL (sub_items));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_TREE),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_side_pane, g_type_name (THUNAR_TYPE_TREE_PANE)), GTK_MENU_SHELL (sub_items));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_SHORTCUTS),
+                                                     G_OBJECT (window), exo_str_is_equal (last_side_pane, g_type_name (THUNAR_TYPE_SHORTCUTS_PANE)), GTK_MENU_SHELL (sub_items));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_TREE),
+                                                     G_OBJECT (window), exo_str_is_equal (last_side_pane, g_type_name (THUNAR_TYPE_TREE_PANE)), GTK_MENU_SHELL (sub_items));
       g_free (last_side_pane);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (sub_items));
       gtk_widget_show (item);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_STATUSBAR),
-                                                     G_OBJECT (window), TRUE, gtk_widget_get_visible (window->statusbar), GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_MENUBAR),
-                                                     G_OBJECT (window), TRUE, gtk_widget_get_visible (window->menubar), GTK_MENU_SHELL (submenu));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_STATUSBAR),
+                                                     G_OBJECT (window), gtk_widget_get_visible (window->statusbar), GTK_MENU_SHELL (submenu));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_MENUBAR),
+                                                     G_OBJECT (window), gtk_widget_get_visible (window->menubar), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_SHOW_HIDDEN),
-                                                     G_OBJECT (window), TRUE, window->show_hidden, GTK_MENU_SHELL (submenu));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_SHOW_HIDDEN),
+                                                     G_OBJECT (window), window->show_hidden, GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
       thunar_standard_view_append_menu_items (THUNAR_STANDARD_VIEW (window->view), GTK_MENU (submenu), window->accel_group);
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ZOOM_IN), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ZOOM_OUT), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ZOOM_RESET), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ZOOM_IN), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ZOOM_OUT), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ZOOM_RESET), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
 
       g_object_get (window->preferences, "last-view", &last_view, NULL);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_AS_ICONS),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_view, g_type_name (THUNAR_TYPE_ICON_VIEW)), GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_AS_DETAILED_LIST),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_view, g_type_name (THUNAR_TYPE_DETAILS_VIEW)), GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_AS_COMPACT_LIST),
-                                                     G_OBJECT (window), TRUE, exo_str_is_equal (last_view, g_type_name (THUNAR_TYPE_COMPACT_VIEW)), GTK_MENU_SHELL (submenu));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_AS_ICONS),
+                                                     G_OBJECT (window), exo_str_is_equal (last_view, g_type_name (THUNAR_TYPE_ICON_VIEW)), GTK_MENU_SHELL (submenu));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_AS_DETAILED_LIST),
+                                                     G_OBJECT (window), exo_str_is_equal (last_view, g_type_name (THUNAR_TYPE_DETAILS_VIEW)), GTK_MENU_SHELL (submenu));
+      thunar_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_AS_COMPACT_LIST),
+                                                     G_OBJECT (window), exo_str_is_equal (last_view, g_type_name (THUNAR_TYPE_COMPACT_VIEW)), GTK_MENU_SHELL (submenu));
       g_free (last_view);
 
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
@@ -1025,7 +1026,8 @@ thunar_window_create_go_menu (ThunarWindow *window,
   gchar                *icon_name;
   ThunarGtkActionEntry *action_entry;
   ThunarHistory        *history;
-  GList *lp;
+  GList                *lp;
+  GtkWidget            *item;
 
   _thunar_return_if_fail (THUNAR_IS_WINDOW (window));
 
@@ -1035,14 +1037,17 @@ thunar_window_create_go_menu (ThunarWindow *window,
       submenu = g_object_new (THUNAR_TYPE_MENU, "launcher",              window->launcher, NULL);
       gtk_menu_set_accel_group (GTK_MENU (submenu), window->accel_group);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window), !thunar_g_file_is_root (thunar_file_get_file (window->current_directory)), TRUE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      gtk_widget_set_sensitive (item, !thunar_g_file_is_root (thunar_file_get_file (window->current_directory)));
       history = thunar_standard_view_get_history (THUNAR_STANDARD_VIEW (window->view));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_BACK), G_OBJECT (window), thunar_history_has_back (history), TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window), thunar_history_has_forward (history), TRUE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_BACK), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      gtk_widget_set_sensitive (item, thunar_history_has_back (history));
+      item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      gtk_widget_set_sensitive (item, thunar_history_has_forward (history));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_COMPUTER), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_DESKTOP), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_COMPUTER), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_DESKTOP), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       if (thunar_g_vfs_is_uri_scheme_supported ("trash"))
         {
           GFile *gfile;
@@ -1060,13 +1065,13 @@ thunar_window_create_go_menu (ThunarWindow *window,
                   else
                     icon_name = "user-trash";
                   thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
-                                                     action_entry->accel_path, action_entry->callback, G_OBJECT (window), icon_name, TRUE, GTK_MENU_SHELL (submenu));
+                                                     action_entry->accel_path, action_entry->callback, G_OBJECT (window), icon_name, GTK_MENU_SHELL (submenu));
                   g_object_unref (trash_folder);
                 }
               g_object_unref (gfile);
             }
         }
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_TEMPLATES), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_TEMPLATES), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
 
       /* We pass the bookmark items to the menu, which will be destroyed after use */
@@ -1076,11 +1081,11 @@ thunar_window_create_go_menu (ThunarWindow *window,
       thunar_window_update_bookmarks (window);
 
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_FILE_SYSTEM), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_FILE_SYSTEM), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_NETWORK), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_NETWORK), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_LOCATION), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_LOCATION), G_OBJECT (window), GTK_MENU_SHELL (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
 
@@ -1104,8 +1109,8 @@ thunar_window_create_help_menu (ThunarWindow *window,
     {
       submenu = g_object_new (THUNAR_TYPE_MENU, "launcher",              window->launcher, NULL);
       gtk_menu_set_accel_group (GTK_MENU (submenu), window->accel_group);
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CONTENTS), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
-      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ABOUT), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CONTENTS), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ABOUT), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
@@ -1797,13 +1802,13 @@ thunar_window_notebook_popup_menu (GtkWidget    *notebook,
 
   menu = gtk_menu_new ();
   gtk_menu_set_accel_group (GTK_MENU (menu), window->accel_group);
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_NEW_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_NEW_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
   thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_DETACH_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (menu));
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_SWITCH_PREV_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (menu));
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_SWITCH_NEXT_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_DETACH_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_SWITCH_PREV_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_SWITCH_NEXT_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
   thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_TAB), G_OBJECT (window), TRUE, TRUE, GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
   thunar_gtk_menu_run (GTK_MENU (menu));
   return TRUE;
 }
@@ -2157,7 +2162,7 @@ thunar_window_bookmark_add_menu_item (GFile       *file_path,
             name = thunar_file_get_display_name (file);
 
           icon_name = thunar_file_get_icon_name (file, THUNAR_FILE_ICON_STATE_DEFAULT, icon_theme);
-          menu_item = thunar_gtk_image_menu_item_new_from_icon_name (name, tooltip, accel_path, NULL, NULL, icon_name, TRUE, NULL);
+          menu_item = thunar_gtk_image_menu_item_new_from_icon_name (name, tooltip, accel_path, NULL, NULL, icon_name, NULL);
           window->bookmark_menu_items = g_list_append (window->bookmark_menu_items, menu_item);
           g_signal_connect (G_OBJECT (menu_item), "activate",  G_CALLBACK (thunar_window_action_open_bookmark), G_OBJECT (menu_item));
           g_object_set_data_full (G_OBJECT (menu_item), I_("thunar-file"), file, g_object_unref);
@@ -2175,7 +2180,7 @@ thunar_window_bookmark_add_menu_item (GFile       *file_path,
           remote_name = thunar_g_file_get_display_name_remote (file_path);
           name = remote_name;
         }
-      menu_item = thunar_gtk_image_menu_item_new_from_icon_name (name, tooltip, accel_path, NULL, NULL, "folder-remote", TRUE, NULL);
+      menu_item = thunar_gtk_image_menu_item_new_from_icon_name (name, tooltip, accel_path, NULL, NULL, "folder-remote", NULL);
       window->bookmark_menu_items = g_list_append (window->bookmark_menu_items, menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",  G_CALLBACK (thunar_window_action_open_bookmark), G_OBJECT (menu_item));
       g_object_set_data_full (G_OBJECT (menu_item), I_("location-file"),
@@ -3617,7 +3622,7 @@ thunar_window_append_menu_item (ThunarWindow         *window,
 {
   _thunar_return_if_fail (THUNAR_IS_WINDOW (window));
 
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (action), G_OBJECT (window), TRUE, TRUE, menu);
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (action), G_OBJECT (window), menu);
 }
 
 

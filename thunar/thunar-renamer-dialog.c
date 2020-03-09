@@ -369,16 +369,16 @@ thunar_renamer_dialog_init (ThunarRenamerDialog *renamer_dialog)
 
   /* add the toolbar to the dialog */
   toolbar = gtk_toolbar_new ();
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ADD_FILES), G_OBJECT (renamer_dialog), TRUE);
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_REMOVE_FILES), G_OBJECT (renamer_dialog), TRUE);
+  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ADD_FILES), G_OBJECT (renamer_dialog));
+  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_REMOVE_FILES), G_OBJECT (renamer_dialog));
   seperator = gtk_separator_tool_item_new ();
   gtk_container_add (GTK_CONTAINER (toolbar), GTK_WIDGET (seperator));
   gtk_widget_show (GTK_WIDGET (seperator));
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_CLEAR), G_OBJECT (renamer_dialog), TRUE);
+  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_CLEAR), G_OBJECT (renamer_dialog));
   seperator = gtk_separator_tool_item_new ();
   gtk_container_add (GTK_CONTAINER (toolbar), GTK_WIDGET (seperator));
   gtk_widget_show (GTK_WIDGET (seperator));
-  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog), TRUE);
+  thunar_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog));
   exo_binding_new (G_OBJECT (renamer_dialog), "standalone", G_OBJECT (toolbar), "visible");
   gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (renamer_dialog))), toolbar, FALSE, FALSE, 0);
 
@@ -834,6 +834,7 @@ thunar_renamer_dialog_append_menu_item (ThunarRenamerDialog *renamer_dialog,
   gchar                  *label_text;
   gchar                  *tooltip_text;
   ThunarGtkActionEntry   *action_entry;
+  GtkWidget              *item;
 
   _thunar_return_val_if_fail (THUNAR_IS_RENAMER_DIALOG (renamer_dialog), NULL);
 
@@ -844,10 +845,12 @@ thunar_renamer_dialog_append_menu_item (ThunarRenamerDialog *renamer_dialog,
         label_text = ngettext ("Remove File", "Remove Files", g_list_length (renamer_dialog->selected_files));
         tooltip_text = ngettext ("Remove the selected file from the list of files to be renamed",
                                  "Remove the selected files from the list of files to be renamed", g_list_length (renamer_dialog->selected_files));
-        return thunar_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path, action_entry->callback,
-                                                                 G_OBJECT (renamer_dialog), action_entry->menu_item_icon_name, renamer_dialog->selected_files != NULL, GTK_MENU_SHELL (menu) );
+        item = thunar_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path, action_entry->callback,
+                                                                 G_OBJECT (renamer_dialog), action_entry->menu_item_icon_name, GTK_MENU_SHELL (menu) );
+        gtk_widget_set_sensitive (item, renamer_dialog->selected_files != NULL);
+        return item;
       default:
-      return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (renamer_dialog), TRUE, TRUE, menu);
+      return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (renamer_dialog), menu);
     }
   return NULL;
 }

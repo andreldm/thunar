@@ -3620,7 +3620,7 @@ thunar_standard_view_append_menu_item (ThunarStandardView      *standard_view,
 {
   _thunar_return_if_fail (THUNAR_IS_STANDARD_VIEW (standard_view));
 
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (action), G_OBJECT (standard_view), TRUE, TRUE, GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (action), G_OBJECT (standard_view), GTK_MENU_SHELL (menu));
 }
 
 

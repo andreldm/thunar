@@ -949,7 +949,7 @@ thunar_details_view_append_menu_items (ThunarStandardView *standard_view,
 
   _thunar_return_if_fail (THUNAR_IS_DETAILS_VIEW (details_view));
 
-  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_DETAILS_VIEW_ACTION_CONFIGURE_COLUMNS), G_OBJECT (details_view), TRUE, TRUE, GTK_MENU_SHELL (menu));
+  thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_DETAILS_VIEW_ACTION_CONFIGURE_COLUMNS), G_OBJECT (details_view), GTK_MENU_SHELL (menu));
 }
 
 

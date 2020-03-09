@@ -1152,11 +1152,15 @@ thunar_launcher_append_paste_item (ThunarLauncher *launcher,
 
   /* Some single folder is selected, but its not the current directory */
   if (launcher->single_folder_selected && !launcher->current_directory_selected)
-    item = thunar_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_LAUNCHER_ACTION_PASTE_ALT), G_OBJECT (launcher),
-                                                          thunar_clipboard_manager_get_can_paste (clipboard) && thunar_file_is_writable (launcher->single_folder), TRUE, GTK_MENU_SHELL (menu));
+    {
+      item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
+      gtk_widget_set_sensitive (item, thunar_clipboard_manager_get_can_paste (clipboard) && thunar_file_is_writable (launcher->single_folder));
+    }
   else
-    item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher),
-                                                          thunar_clipboard_manager_get_can_paste (clipboard) && thunar_file_is_writable (launcher->current_directory), TRUE, GTK_MENU_SHELL (menu));
+    {
+      item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
+      gtk_widget_set_sensitive (item, thunar_clipboard_manager_get_can_paste (clipboard) && thunar_file_is_writable (launcher->current_directory));
+    }
   g_object_unref (clipboard);
   return item;
 }
@@ -1183,17 +1187,17 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
     {
       case THUNAR_LAUNCHER_ACTION_OPEN: /* aka "activate" */
       return thunar_gtk_image_menu_item_new_from_icon_name (_("_Open"), ngettext ("Open the selected file", "Open the selected files", launcher->n_selected_files),
-                                         action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, menu);
+                                         action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
 
       case THUNAR_LAUNCHER_ACTION_EXECUTE:
       return thunar_gtk_image_menu_item_new_from_icon_name (_("_Execute"), ngettext ("Execute the selected file", "Execute the selected files", launcher->n_selected_files),
-                                         action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, menu);
+                                         action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
 
       case THUNAR_LAUNCHER_ACTION_OPEN_IN_TAB:
       label_text = g_strdup_printf (ngettext ("Open in %d New _Tab", "Open in %d New _Tabs", launcher->n_selected_files), launcher->n_selected_files);
       tooltip_text = g_strdup_printf (ngettext ("Open the selected directory in %d new tab",
                                                 "Open the selected directories in %d new tabs", launcher->n_selected_files), launcher->n_selected_files);
-      item = thunar_gtk_menu_item_new (label_text, tooltip_text, action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), TRUE, menu);
+      item = thunar_gtk_menu_item_new (label_text, tooltip_text, action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), menu);
       g_free (tooltip_text);
       g_free (label_text);
       return item;
@@ -1202,17 +1206,17 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
       label_text = g_strdup_printf (ngettext ("Open in %d New _Window", "Open in %d New _Windows", launcher->n_selected_files), launcher->n_selected_files);
       tooltip_text = g_strdup_printf (ngettext ("Open the selected directory in %d new window",
                                                 "Open the selected directories in %d new windows",launcher->n_selected_files), launcher->n_selected_files);
-      item = thunar_gtk_menu_item_new (label_text, tooltip_text, action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), TRUE, menu);
+      item = thunar_gtk_menu_item_new (label_text, tooltip_text, action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), menu);
       g_free (tooltip_text);
       g_free (label_text);
       return item;
 
       case THUNAR_LAUNCHER_ACTION_OPEN_WITH_OTHER:
       return thunar_gtk_menu_item_new (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
-                                          action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), TRUE, menu);
+                                          action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), menu);
 
       case THUNAR_LAUNCHER_ACTION_SENDTO_MENU:
-      item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), TRUE, TRUE, GTK_MENU_SHELL (menu));
+      item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
       submenu = thunar_launcher_build_sendto_submenu (launcher);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
       return item;
@@ -1223,14 +1227,16 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
           label_text = ngettext ("Ma_ke Link", "Ma_ke Links", launcher->n_selected_files);
           tooltip_text = ngettext ("Create a symbolic link for the selected file",
                                    "Create a symbolic link for each selected file", launcher->n_selected_files);
-          return thunar_gtk_menu_item_new (label_text, tooltip_text, action_entry->accel_path, action_entry->callback,
-                                       G_OBJECT (launcher), thunar_file_is_writable (launcher->current_directory), menu);
+          item = thunar_gtk_menu_item_new (label_text, tooltip_text, action_entry->accel_path, action_entry->callback,
+                                       G_OBJECT (launcher), menu);
+          gtk_widget_set_sensitive (item, thunar_file_is_writable (launcher->current_directory));
+          return item;
         }
       return NULL;
 
       case THUNAR_LAUNCHER_ACTION_DUPLICATE:
       if (launcher->current_directory_selected == FALSE && !thunar_file_is_trashed (launcher->current_directory))
-        return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), TRUE, TRUE, GTK_MENU_SHELL (menu));
+        return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
       return NULL;
 
       case THUNAR_LAUNCHER_ACTION_RENAME:
@@ -1238,8 +1244,10 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
         {
           tooltip_text = ngettext ("Rename the selected file",
                                    "Rename the selected files", launcher->n_selected_files);
-          return thunar_gtk_menu_item_new (action_entry->menu_item_label_text, tooltip_text, action_entry->accel_path,
-                                       action_entry->callback, G_OBJECT (launcher), thunar_file_is_writable (launcher->current_directory), menu);
+          item = thunar_gtk_menu_item_new (action_entry->menu_item_label_text, tooltip_text, action_entry->accel_path,
+                                       action_entry->callback, G_OBJECT (launcher), menu);
+          gtk_widget_set_sensitive (item, thunar_file_is_writable (launcher->current_directory));
+          return item;
         }
       return NULL;
 
@@ -1248,8 +1256,10 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
         {
           tooltip_text = ngettext ("Restore the selected file to its original location",
                                    "Restore the selected files to its original location", launcher->n_selected_files);
-          return thunar_gtk_menu_item_new (action_entry->menu_item_label_text, tooltip_text, action_entry->accel_path,
-                                       action_entry->callback, G_OBJECT (launcher), thunar_file_is_writable (launcher->current_directory), menu);
+          item = thunar_gtk_menu_item_new (action_entry->menu_item_label_text, tooltip_text, action_entry->accel_path,
+                                       action_entry->callback, G_OBJECT (launcher), menu);
+          gtk_widget_set_sensitive (item, thunar_file_is_writable (launcher->current_directory));
+          return item;
         }
       return NULL;
 
@@ -1261,7 +1271,7 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
               tooltip_text = ngettext ("Move the selected file to the Trash",
                                        "Move the selected files to the Trash", launcher->n_selected_files);
               return thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, tooltip_text,
-                                                        action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, menu);
+                                                        action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
             }
         }
       return NULL;
@@ -1277,7 +1287,7 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
               tooltip_text = ngettext ("Permanently delete the selected file",
                                        "Permanently delete the selected files", launcher->n_selected_files);
               return thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, tooltip_text,
-                                                        action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, menu);
+                                                        action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
             }
         }
       return NULL;
@@ -1286,8 +1296,11 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
       if (launcher->single_folder_selected == TRUE)
         {
           if (thunar_file_is_root (launcher->single_folder) && thunar_file_is_trashed (launcher->single_folder))
-              return thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
-                                                        action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, thunar_file_get_item_count (launcher->single_folder) > 0, menu);
+            {
+              item = thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
+                                                        action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
+              gtk_widget_set_sensitive (item, thunar_file_get_item_count (launcher->single_folder) > 0);
+            }
         }
       return NULL;
 
@@ -1295,7 +1308,7 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
       if (launcher->single_folder_selected && launcher->current_directory_selected)
         {
           if (!thunar_file_is_trashed (launcher->single_folder))
-            return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), TRUE, TRUE, GTK_MENU_SHELL (menu));
+            return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
         }
       return NULL;
 
@@ -1304,7 +1317,7 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
         {
           if (!thunar_file_is_trashed (launcher->single_folder))
             {
-              item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), TRUE, TRUE, GTK_MENU_SHELL (menu));
+              item = thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
               submenu = thunar_launcher_create_document_submenu_new (launcher);
               gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
               return item;
@@ -1318,7 +1331,7 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
           tooltip_text = ngettext ("Prepare the selected file to be moved with a Paste command",
                                    "Prepare the selected files to be moved with a Paste command", launcher->n_selected_files);
           return thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, tooltip_text,
-                                                    action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, menu);
+                                                    action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
         }
           return NULL;
 
@@ -1328,13 +1341,13 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
       tooltip_text = ngettext ("Prepare the selected file to be copied with a Paste command",
                                "Prepare the selected files to be copied with a Paste command", launcher->n_selected_files);
       return thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, tooltip_text,
-                                                action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, menu);
+                                                action_entry->accel_path, action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, menu);
 
       case THUNAR_LAUNCHER_ACTION_PASTE:
         return thunar_launcher_append_paste_item (launcher, menu, FALSE);
 
       default:
-      return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), TRUE, TRUE, GTK_MENU_SHELL (menu));
+      return thunar_gtk_menu_item_new_from_action_entry (action_entry, G_OBJECT (launcher), GTK_MENU_SHELL (menu));
     }
   return NULL;
 }
@@ -1535,7 +1548,7 @@ thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
           tooltip_text = ngettext ("Add the selected folder to the shortcuts side pane",
                                    "Add the selected folders to the shortcuts side pane", launcher->n_selected_files);
           item = thunar_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path,
-                                                    action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, GTK_MENU_SHELL (submenu));
+                                                    action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, GTK_MENU_SHELL (submenu));
         }
     }
 
@@ -1552,7 +1565,7 @@ thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
       tooltip_text = ngettext ("Create a link to the selected file on the desktop",
                                "Create links to the selected files on the desktop", launcher->n_selected_files);
       item = thunar_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path,
-                                                action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, TRUE, GTK_MENU_SHELL (submenu));
+                                                action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, GTK_MENU_SHELL (submenu));
     }
 
   item = gtk_separator_menu_item_new ();
@@ -1579,7 +1592,7 @@ thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
           g_object_unref (icon);
         }
       item = thunar_gtk_image_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_action_sendto_device),
-                                                G_OBJECT (launcher), image, TRUE, GTK_MENU_SHELL (submenu));
+                                                G_OBJECT (launcher), image, GTK_MENU_SHELL (submenu));
       g_object_set_qdata_full (G_OBJECT (item), thunar_launcher_handler_quark, lp->data, NULL);
       g_object_set_data (G_OBJECT (lp->data), "skip-app-info-update", GUINT_TO_POINTER (1));
 
@@ -1619,7 +1632,7 @@ thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
               g_object_unref (icon);
             }
           item = thunar_gtk_image_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_menu_item_activated),
-                                                    G_OBJECT (launcher), image, TRUE, GTK_MENU_SHELL (submenu));
+                                                    G_OBJECT (launcher), image, GTK_MENU_SHELL (submenu));
           g_object_set_qdata_full (G_OBJECT (item), thunar_launcher_handler_quark, lp->data, NULL);
 
           /* cleanup */
@@ -2096,7 +2109,7 @@ thunar_launcher_create_document_submenu_templates (ThunarLauncher *launcher,
       /* allocate an image based on the icon */
       image = gtk_image_new_from_pixbuf (icon);
 
-      item = thunar_gtk_image_menu_item_new (thunar_file_get_display_name (file), NULL, NULL, NULL, NULL, image, TRUE, GTK_MENU_SHELL (parent_menu));
+      item = thunar_gtk_image_menu_item_new (thunar_file_get_display_name (file), NULL, NULL, NULL, NULL, image, GTK_MENU_SHELL (parent_menu));
       if (thunar_file_is_directory (file))
         {
           /* allocate a new submenu for the directory */
@@ -2143,6 +2156,7 @@ thunar_launcher_create_document_submenu_new (ThunarLauncher *launcher)
   gchar           *template_path;
   gchar           *label_text;
   GtkWidget       *submenu;
+  GtkWidget       *item;
 
   _thunar_return_val_if_fail (THUNAR_IS_LAUNCHER (launcher), NULL);
 
@@ -2173,7 +2187,8 @@ thunar_launcher_create_document_submenu_new (ThunarLauncher *launcher)
     {
       template_path = g_file_get_path (templates_dir);
       label_text = g_strdup_printf (_("No templates installed in \"%s\""), template_path);
-      thunar_gtk_image_menu_item_new (label_text, NULL, NULL, NULL, NULL, NULL, FALSE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_image_menu_item_new (label_text, NULL, NULL, NULL, NULL, NULL, GTK_MENU_SHELL (submenu));
+      gtk_widget_set_sensitive (item, FALSE);
       g_free (template_path);
     }
   else
@@ -2184,7 +2199,7 @@ thunar_launcher_create_document_submenu_new (ThunarLauncher *launcher)
 
   thunar_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
   thunar_gtk_image_menu_item_new_from_icon_name (_("_Empty File"), NULL, NULL,
-                                     G_CALLBACK (thunar_launcher_action_create_document), G_OBJECT (launcher), "text-x-generic", TRUE, GTK_MENU_SHELL (submenu));
+                                     G_CALLBACK (thunar_launcher_action_create_document), G_OBJECT (launcher), "text-x-generic", GTK_MENU_SHELL (submenu));
 
 
   g_object_unref (templates_dir);
@@ -2267,7 +2282,7 @@ thunar_launcher_build_application_submenu (ThunarLauncher *launcher,
                                            "Use \"%s\" to open the selected files",
                                            launcher->n_selected_files), g_app_info_get_name (lp->data));
       image = gtk_image_new_from_gicon (g_app_info_get_icon (lp->data), GTK_ICON_SIZE_MENU);
-      item = thunar_gtk_image_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_menu_item_activated), G_OBJECT (launcher), image, TRUE, GTK_MENU_SHELL (submenu));
+      item = thunar_gtk_image_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_menu_item_activated), G_OBJECT (launcher), image, GTK_MENU_SHELL (submenu));
       g_object_set_qdata_full (G_OBJECT (item), thunar_launcher_handler_quark, lp->data, g_object_unref);
       g_free (tooltip_text);
       g_free (label_text);
@@ -2323,7 +2338,7 @@ thunar_launcher_append_open_section (ThunarLauncher *launcher,
 
       image = gtk_image_new_from_gicon (g_app_info_get_icon (applications->data), GTK_ICON_SIZE_MENU);
       menu_item = thunar_gtk_image_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_menu_item_activated),
-                                                     G_OBJECT (launcher), image, TRUE, menu);
+                                                     G_OBJECT (launcher), image, menu);
 
       /* remember the default application for the "Open" action as quark */
       g_object_set_qdata_full (G_OBJECT (menu_item), thunar_launcher_handler_quark, applications->data, g_object_unref);
@@ -2340,7 +2355,7 @@ thunar_launcher_append_open_section (ThunarLauncher *launcher,
       tooltip_text = g_strdup_printf (ngettext ("Open the selected file with the default application",
                                            "Open the selected files with the default applications",
                                            launcher->n_selected_files));
-      thunar_gtk_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_menu_item_activated), G_OBJECT (launcher), TRUE, menu);
+      thunar_gtk_menu_item_new (label_text, tooltip_text, NULL, G_CALLBACK (thunar_launcher_menu_item_activated), G_OBJECT (launcher), menu);
       g_free (tooltip_text);
       g_free (label_text);
     }
@@ -2349,7 +2364,7 @@ thunar_launcher_append_open_section (ThunarLauncher *launcher,
     {
       menu_item =  thunar_gtk_menu_item_new (_("Open With"),
                                                 _("Choose another application with which to open the selected file"),
-                                                NULL, NULL, NULL, TRUE, menu);
+                                                NULL, NULL, NULL, menu);
       submenu = thunar_launcher_build_application_submenu (launcher, applications);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), submenu);
     }

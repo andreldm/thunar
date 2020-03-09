@@ -603,7 +603,7 @@ thunar_history_show_menu (ThunarHistory         *history,
       /* add an item for this file */
       display_name = g_object_get_qdata (G_OBJECT (lp->data), thunar_history_display_name_quark);
       item = thunar_gtk_image_menu_item_new (display_name, parse_name, NULL,
-                                                NULL, NULL, image, TRUE, GTK_MENU_SHELL (menu));
+                                                NULL, NULL, image, GTK_MENU_SHELL (menu));
       g_object_set_qdata (G_OBJECT (item), thunar_history_gfile_quark, lp->data);
       g_signal_connect (G_OBJECT (item), "activate", handler, history);
 

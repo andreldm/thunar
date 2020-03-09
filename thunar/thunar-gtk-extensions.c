@@ -34,6 +34,12 @@
 #include <thunarx/thunarx.h>
 
 
+static void thunar_gtk_menu_item_fill_base (GtkWidget    *item,
+                                const gchar  *tooltip_text,
+                                const gchar  *accel_path,
+                                GCallback     callback,
+                                GObject      *callback_param,
+                               GtkMenuShell  *menu_to_append_item);
 
 /**
  * thunar_gtk_label_set_a11y_relation:
@@ -64,21 +70,16 @@ thunar_gtk_label_set_a11y_relation (GtkLabel  *label,
 
 
 
-GtkWidget*
-thunar_gtk_menu_item_new (const gchar  *label_text,
-                             const gchar  *tooltip_text,
-                             const gchar  *accel_path,
-                             GCallback     callback,
-                             GObject      *callback_param,
-                             gboolean      sensitive,
-                             GtkMenuShell  *menu_to_append_item)
+void
+thunar_gtk_menu_item_fill_base (GtkWidget    *item,
+                                const gchar  *tooltip_text,
+                                const gchar  *accel_path,
+                                GCallback     callback,
+                                GObject      *callback_param,
+                               GtkMenuShell  *menu_to_append_item)
 {
-  GtkWidget *item;
-
-  item = gtk_menu_item_new_with_mnemonic (label_text);
   if (tooltip_text != NULL)
     gtk_widget_set_tooltip_text (item, tooltip_text);
-  gtk_widget_set_sensitive (item, sensitive);
   if (accel_path != NULL)
     gtk_menu_item_set_accel_path (GTK_MENU_ITEM (item), accel_path);
   if (callback != NULL)
@@ -86,6 +87,22 @@ thunar_gtk_menu_item_new (const gchar  *label_text,
   if (menu_to_append_item != NULL)
     gtk_menu_shell_append (menu_to_append_item, item);
   gtk_widget_show (item);
+}
+
+
+
+GtkWidget*
+thunar_gtk_menu_item_new (const gchar  *label_text,
+                             const gchar  *tooltip_text,
+                             const gchar  *accel_path,
+                             GCallback     callback,
+                             GObject      *callback_param,
+                             GtkMenuShell  *menu_to_append_item)
+{
+  GtkWidget *item;
+
+  item = gtk_menu_item_new_with_mnemonic (label_text);
+  thunar_gtk_menu_item_fill_base (item, tooltip_text, accel_path, callback, callback_param, menu_to_append_item);
   return item;
 }
 
@@ -98,7 +115,6 @@ thunar_gtk_image_menu_item_new_from_icon_name (const gchar *label_text,
                                                   GCallback    callback,
                                                   GObject     *callback_param,
                                                   const gchar *icon_name,
-                                                  gboolean     sensitive,
                                                   GtkMenuShell  *menu_to_append_item)
 {
   GtkWidget *image = NULL;
@@ -106,7 +122,7 @@ thunar_gtk_image_menu_item_new_from_icon_name (const gchar *label_text,
   if (icon_name != NULL)
     image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
   return thunar_gtk_image_menu_item_new (label_text, tooltip_text, accel_path,
-                                            callback, callback_param, image, sensitive, menu_to_append_item);
+                                            callback, callback_param, image, menu_to_append_item);
 }
 
 
@@ -118,7 +134,6 @@ thunar_gtk_image_menu_item_new (const gchar *label_text,
                                    GCallback    callback,
                                    GObject     *callback_param,
                                    GtkWidget   *image,
-                                   gboolean     sensitive,
                                    GtkMenuShell  *menu_to_append_item)
 {
   GtkWidget *item;
@@ -126,17 +141,7 @@ thunar_gtk_image_menu_item_new (const gchar *label_text,
   G_GNUC_BEGIN_IGNORE_DEPRECATIONS
   item = gtk_image_menu_item_new_with_mnemonic (label_text);
   G_GNUC_END_IGNORE_DEPRECATIONS
-  if (tooltip_text != NULL)
-    gtk_widget_set_tooltip_text (item, tooltip_text);
-  gtk_widget_set_sensitive (item, sensitive);
-  if (accel_path != NULL)
-    gtk_menu_item_set_accel_path (GTK_MENU_ITEM (item), accel_path);
-  if (callback != NULL)
-    g_signal_connect_swapped (G_OBJECT (item), "activate", callback, callback_param);
-  if (menu_to_append_item != NULL)
-    gtk_menu_shell_append (menu_to_append_item, item);
-  gtk_widget_show (item);
-
+  thunar_gtk_menu_item_fill_base (item, tooltip_text, accel_path, callback, callback_param, menu_to_append_item);
   if (image != NULL)
     {
       G_GNUC_BEGIN_IGNORE_DEPRECATIONS
@@ -171,8 +176,8 @@ thunar_gtk_menu_thunarx_menu_item_new (GObject *thunarx_menu_item,
                 NULL);
 
   gtk_menu_item = thunar_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, NULL,
-                                                                    G_CALLBACK (thunarx_menu_item_activate),
-                                                                    G_OBJECT (thunarx_menu_item), icon_name, sensitive, menu_to_append_item);
+                                                                 G_CALLBACK (thunarx_menu_item_activate),
+                                                                 G_OBJECT (thunarx_menu_item), icon_name, menu_to_append_item);
 
   /* recursively add submenu items if any */
   if (thunarx_menu != NULL)
@@ -200,23 +205,15 @@ thunar_gtk_check_menu_item_new (const gchar  *label_text,
                                    const gchar  *accel_path,
                                    GCallback     callback,
                                    GObject      *callback_param,
-                                   gboolean      sensitive,
                                    gboolean      active,
                                    GtkMenuShell  *menu_to_append_item)
 {
   GtkWidget *item;
 
   item = gtk_check_menu_item_new_with_mnemonic (label_text);
-  if (tooltip_text != NULL)
-    gtk_widget_set_tooltip_text (item, tooltip_text);
-  gtk_widget_set_sensitive (item, sensitive);
-  if (accel_path != NULL)
-    gtk_menu_item_set_accel_path (GTK_MENU_ITEM (item), accel_path);
+  thunar_gtk_menu_item_fill_base (item, tooltip_text, accel_path, NULL, NULL, menu_to_append_item);
+  /* set_active has to bedone before signal connect, to dont trigger the callback */
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), active);
-  if (menu_to_append_item != NULL)
-    gtk_menu_shell_append (menu_to_append_item, item);
-  gtk_widget_show (item);
-
   if (callback != NULL)
     g_signal_connect_swapped (G_OBJECT (item), "toggled", callback, callback_param);
 
@@ -231,7 +228,6 @@ thunar_gtk_radio_menu_item_new (const gchar  *label_text,
                                    const gchar  *accel_path,
                                    GCallback     callback,
                                    GObject      *callback_param,
-                                   gboolean      sensitive,
                                    gboolean      active,
                                    GtkMenuShell  *menu_to_append_item)
 {
@@ -241,16 +237,9 @@ thunar_gtk_radio_menu_item_new (const gchar  *label_text,
   /* So we use gtk_check_menu_item for now and draw it as radio */
   item = gtk_check_menu_item_new_with_mnemonic (label_text);
   gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
-  if (tooltip_text != NULL)
-    gtk_widget_set_tooltip_text (item, tooltip_text);
-  gtk_widget_set_sensitive (item, sensitive);
-  if (accel_path != NULL)
-    gtk_menu_item_set_accel_path (GTK_MENU_ITEM (item), accel_path);
+  thunar_gtk_menu_item_fill_base (item, tooltip_text, accel_path, NULL, NULL, menu_to_append_item);
+  /* set_active has to bedone before signal connect, to dont trigger the callback */
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), active);
-  if (menu_to_append_item != NULL)
-    gtk_menu_shell_append (menu_to_append_item, item);
-  gtk_widget_show (item);
-
   if (callback != NULL)
     g_signal_connect_swapped (G_OBJECT (item), "toggled", callback, callback_param);
 
@@ -262,37 +251,50 @@ thunar_gtk_radio_menu_item_new (const gchar  *label_text,
 GtkWidget*
 thunar_gtk_menu_item_new_from_action_entry (ThunarGtkActionEntry *action_entry,
                                                GObject              *callback_param,
-                                               gboolean              sensitive,
-                                               gboolean              active,
                                                GtkMenuShell         *menu_to_append_item)
 {
   if (action_entry->menu_item_type == THUNAR_GTK_IMAGE_MENU_ITEM)
     {
       return thunar_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
                                                                action_entry->accel_path, action_entry->callback,
-                                                               callback_param, action_entry->menu_item_icon_name, sensitive, menu_to_append_item);
-    }
-  else if (action_entry->menu_item_type == THUNAR_GTK_CHECK_MENU_ITEM)
-    {
-      return thunar_gtk_check_menu_item_new (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
-                                                action_entry->accel_path, action_entry->callback,
-                                                callback_param, sensitive, active, menu_to_append_item);
-    }
-  else if (action_entry->menu_item_type == THUNAR_GTK_RADIO_MENU_ITEM)
-    {
-      return thunar_gtk_radio_menu_item_new (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
-                                                action_entry->accel_path, action_entry->callback,
-                                                callback_param, sensitive, active, menu_to_append_item);
+                                                               callback_param, action_entry->menu_item_icon_name, menu_to_append_item);
     }
   else if (action_entry->menu_item_type == THUNAR_GTK_MENU_ITEM)
     {
       return thunar_gtk_menu_item_new (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
                                           action_entry->accel_path, action_entry->callback,
-                                          callback_param, sensitive, menu_to_append_item);
+                                          callback_param, menu_to_append_item);
     }
   else
     {
-      g_warning ("thunar_gtk_menu_item_new: Unknown item_type");
+      g_warning ("thunar_gtk_menu_item_new_from_action_entry: Unknown item_type");
+      return NULL;
+    }
+}
+
+
+
+GtkWidget*
+thunar_gtk_toggle_menu_item_new_from_action_entry (ThunarGtkActionEntry *action_entry,
+                                               GObject              *callback_param,
+                                               gboolean              active,
+                                               GtkMenuShell         *menu_to_append_item)
+{
+  if (action_entry->menu_item_type == THUNAR_GTK_CHECK_MENU_ITEM)
+    {
+      return thunar_gtk_check_menu_item_new (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
+                                                action_entry->accel_path, action_entry->callback,
+                                                callback_param, active, menu_to_append_item);
+    }
+  else if (action_entry->menu_item_type == THUNAR_GTK_RADIO_MENU_ITEM)
+    {
+      return thunar_gtk_radio_menu_item_new (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
+                                                action_entry->accel_path, action_entry->callback,
+                                                callback_param, active, menu_to_append_item);
+    }
+  else
+    {
+      g_warning ("thunar_gtk_toggle_menu_item_new_from_action_entry: Unknown item_type");
       return NULL;
     }
 }
@@ -525,8 +527,7 @@ thunar_gtk_translate_action_entries (ThunarGtkActionEntry *action_entries,
 GtkWidget*
 thunar_gtk_tool_button_new_from_action_entry (GtkToolbar           *toolbar,
                                                     ThunarGtkActionEntry *action_entry,
-                                                    GObject              *callback_param,
-                                                    gboolean              sensitive)
+                                                    GObject              *callback_param)
 {
   GtkToolItem *tool_item;
   GtkWidget   *image;
@@ -537,7 +538,6 @@ thunar_gtk_tool_button_new_from_action_entry (GtkToolbar           *toolbar,
   gtk_widget_set_tooltip_text (GTK_WIDGET (tool_item), action_entry->menu_item_tooltip_text);
   gtk_widget_show (GTK_WIDGET (tool_item));
   gtk_widget_show (image);
-  gtk_widget_set_sensitive (GTK_WIDGET (tool_item), sensitive);
   gtk_toolbar_insert (toolbar, tool_item, -1);
   return GTK_WIDGET (tool_item);
 }
