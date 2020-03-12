@@ -33,6 +33,8 @@
 
 #include <thunarx/thunarx.h>
 
+#include <libxfce4ui/libxfce4ui.h>
+
 /**
  * thunar_gtk_label_set_a11y_relation:
  * @label  : a #GtkLabel.
@@ -63,8 +65,8 @@ thunar_gtk_label_set_a11y_relation (GtkLabel  *label,
 
 
 GtkWidget*
-thunar_gtk_menu_thunarx_menu_item_new (GObject *thunarx_menu_item,
-                                          GtkMenuShell  *menu_to_append_item)
+thunar_gtk_menu_thunarx_menu_item_new (GObject      *thunarx_menu_item,
+                                       GtkMenuShell *menu_to_append_item)
 {
   gchar        *label_text, *tooltip_text, *icon_name;
   gboolean      sensitive;
@@ -89,7 +91,7 @@ thunar_gtk_menu_thunarx_menu_item_new (GObject *thunarx_menu_item,
                                                                  G_OBJECT (thunarx_menu_item), icon_name, menu_to_append_item);
 
   /* recursively add submenu items if any */
-  if (thunarx_menu != NULL)
+  if (gtk_menu_item != NULL && thunarx_menu != NULL)
   {
     children = thunarx_menu_get_items (thunarx_menu);
     submenu = gtk_menu_new ();

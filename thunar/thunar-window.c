@@ -732,10 +732,10 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   gtk_widget_set_hexpand (window->location_toolbar, TRUE);
   gtk_grid_attach (GTK_GRID (window->grid), window->location_toolbar, 0, 1, 1, 1);
 
-  window->location_toolbar_item_back = xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_BACK), G_OBJECT (window));
-  window->location_toolbar_item_forward = xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window));
-  window->location_toolbar_item_parent = xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window));
-  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (window->location_toolbar), get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window));
+  window->location_toolbar_item_back = xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_BACK), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
+  window->location_toolbar_item_forward = xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
+  window->location_toolbar_item_parent = xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
+  xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
   g_signal_connect (G_OBJECT (window->location_toolbar_item_back), "button-press-event", G_CALLBACK (thunar_window_history_clicked), G_OBJECT (window));
   g_signal_connect (G_OBJECT (window->location_toolbar_item_forward), "button-press-event", G_CALLBACK (thunar_window_history_clicked), G_OBJECT (window));
   window->signal_handler_id_history_changed = 0;

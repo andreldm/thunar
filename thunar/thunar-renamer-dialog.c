@@ -369,16 +369,16 @@ thunar_renamer_dialog_init (ThunarRenamerDialog *renamer_dialog)
 
   /* add the toolbar to the dialog */
   toolbar = gtk_toolbar_new ();
-  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ADD_FILES), G_OBJECT (renamer_dialog));
-  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_REMOVE_FILES), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_RENAMER_ACTION_ADD_FILES), G_OBJECT (renamer_dialog), GTK_TOOLBAR (toolbar));
+  xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_RENAMER_ACTION_REMOVE_FILES), G_OBJECT (renamer_dialog), GTK_TOOLBAR (toolbar));
   seperator = gtk_separator_tool_item_new ();
   gtk_container_add (GTK_CONTAINER (toolbar), GTK_WIDGET (seperator));
   gtk_widget_show (GTK_WIDGET (seperator));
-  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_CLEAR), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_RENAMER_ACTION_CLEAR), G_OBJECT (renamer_dialog), GTK_TOOLBAR (toolbar));
   seperator = gtk_separator_tool_item_new ();
   gtk_container_add (GTK_CONTAINER (toolbar), GTK_WIDGET (seperator));
   gtk_widget_show (GTK_WIDGET (seperator));
-  xfce_gtk_tool_button_new_from_action_entry (GTK_TOOLBAR (toolbar), get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog));
+  xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog), GTK_TOOLBAR (toolbar));
   exo_binding_new (G_OBJECT (renamer_dialog), "standalone", G_OBJECT (toolbar), "visible");
   gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (renamer_dialog))), toolbar, FALSE, FALSE, 0);
 

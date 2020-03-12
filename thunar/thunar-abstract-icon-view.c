@@ -114,7 +114,7 @@ struct _ThunarAbstractIconViewPrivate
 
 static XfceGtkActionEntry thunar_abstract_icon_view_action_entries[] =
 {
-    { THUNAR_ABSTRACT_ICON_VIEW_ACTION_ARRANGE_ITEMS_MENU, "<Actions>/ThunarStandardView/arrange-items-menu",    "", XFCE_GTK_MENU_ITEM,       N_ ("Arran_ge Items"),             NULL,                                              NULL, G_CALLBACK (NULL),                                             },
+    { THUNAR_ABSTRACT_ICON_VIEW_ACTION_ARRANGE_ITEMS_MENU, "<Actions>/ThunarStandardView/arrange-items-menu",    "", XFCE_GTK_MENU_ITEM,       N_ ("Arran_ge Items"),             NULL,                                                NULL, G_CALLBACK (NULL),                                             },
     { THUNAR_ABSTRACT_ICON_VIEW_ACTION_SORT_BY_NAME,       "<Actions>/ThunarStandardView/sort-by-name",          "", XFCE_GTK_RADIO_MENU_ITEM, N_ ("Sort By _Name"),              N_ ("Keep items sorted by their name"),              NULL, G_CALLBACK (thunar_abstract_icon_view_action_sort_by_name),    },
     { THUNAR_ABSTRACT_ICON_VIEW_ACTION_SORT_BY_SIZE,       "<Actions>/ThunarStandardView/sort-by-size",          "", XFCE_GTK_RADIO_MENU_ITEM, N_ ("Sort By _Size"),              N_ ("Keep items sorted by their size"),              NULL, G_CALLBACK (thunar_abstract_icon_view_action_sort_by_size),    },
     { THUNAR_ABSTRACT_ICON_VIEW_ACTION_SORT_BY_TYPE,       "<Actions>/ThunarStandardView/sort-by-type",          "", XFCE_GTK_RADIO_MENU_ITEM, N_ ("Sort By _Type"),              N_ ("Keep items sorted by their type"),              NULL, G_CALLBACK (thunar_abstract_icon_view_action_sort_by_type),    },
