@@ -29,6 +29,8 @@
 #include <thunar/thunar-private.h>
 #include <thunar/thunar-dialogs.h>
 
+#include <libxfce4ui/libxfce4ui.h>
+
 
 
 /* Property identifiers */

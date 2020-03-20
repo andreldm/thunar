@@ -2099,7 +2099,6 @@ thunar_standard_view_new_files (ThunarStandardView *standard_view,
       /* determine the files for the paths */
       for (lp = path_list; lp != NULL; lp = lp->next)
         {
-          printf("thunar_standard_view_new_files path: %s\n", g_file_get_uri(lp->data));
           file = thunar_file_cache_lookup (lp->data);
           if (G_LIKELY (file != NULL))
             file_list = g_list_prepend (file_list, file);
@@ -2110,7 +2109,6 @@ thunar_standard_view_new_files (ThunarStandardView *standard_view,
       /* check if we have any new files here */
       if (G_LIKELY (file_list != NULL))
         {
-          printf("thunar_standard_view_new_files 2\n" );
           /* select the files */
           thunar_component_set_selected_files (THUNAR_COMPONENT (standard_view), file_list);
 
@@ -2122,7 +2120,6 @@ thunar_standard_view_new_files (ThunarStandardView *standard_view,
         }
       else if (belongs_here)
         {
-          printf("thunar_standard_view_new_files 3\n" );
           /* thunar files are not created yet, try again later because we know
            * some of them belong in this directory, so eventually they
            * will get a ThunarFile */

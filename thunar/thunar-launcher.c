@@ -275,6 +275,18 @@ thunar_launcher_class_init (ThunarLauncherClass *klass)
                            GTK_TYPE_WIDGET,
                            EXO_PARAM_WRITABLE);
 
+  /**
+   * ThunarLauncher:select-files-closure:
+   *
+   * The #GClosure which will be called if the selected file should be updated after a launcher operation
+   **/
+  launcher_props[PROP_SELECT_FILES_CLOSURE] =
+     g_param_spec_pointer ("select-files-closure",
+                           "select-files-closure",
+                           "select-files-closure",
+                           G_PARAM_WRITABLE
+                           | G_PARAM_CONSTRUCT_ONLY);
+
   /* Override ThunarNavigator's properties */
   g_iface = g_type_default_interface_peek (THUNAR_TYPE_NAVIGATOR);
   launcher_props[PROP_CURRENT_DIRECTORY] =
@@ -1136,9 +1148,9 @@ thunar_launcher_append_paste_item (ThunarLauncher *launcher,
                                    GtkMenuShell   *menu,
                                    gboolean        force)
 {
-  GtkWidget              *item = NULL;
-  ThunarClipboardManager *clipboard;
-  XfceGtkActionEntry   *action_entry;
+  GtkWidget                *item = NULL;
+  ThunarClipboardManager   *clipboard;
+  const XfceGtkActionEntry *action_entry;
 
   _thunar_return_val_if_fail (THUNAR_IS_LAUNCHER (launcher), NULL);
 
@@ -1172,13 +1184,13 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
                                   GtkMenuShell         *menu,
                                   ThunarLauncherAction  action)
 {
-  GtkWidget              *item = NULL;
-  GtkWidget              *submenu;
-  gchar                  *label_text;
-  gchar                  *tooltip_text;
-  XfceGtkActionEntry   *action_entry;
-  ThunarPreferences      *preferences;
-  gboolean                show_delete_item;
+  GtkWidget                *item = NULL;
+  GtkWidget                *submenu;
+  gchar                    *label_text;
+  gchar                    *tooltip_text;
+  const XfceGtkActionEntry *action_entry;
+  ThunarPreferences        *preferences;
+  gboolean                  show_delete_item;
 
   _thunar_return_val_if_fail (THUNAR_IS_LAUNCHER (launcher), NULL);
 
@@ -1517,20 +1529,20 @@ thunar_launcher_action_add_shortcuts (ThunarLauncher *launcher)
 static GtkWidget*
 thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
 {
-  GList           *lp;
-  gboolean         linkable = TRUE;
-  gchar           *label_text;
-  gchar           *tooltip_text;
-  GtkWidget       *image;
-  GtkWidget       *item;
-  GtkWidget       *submenu;
-  GtkWidget       *window;
-  GList           *devices;
-  GList           *handlers;
-  GIcon           *icon;
-  ThunarDeviceMonitor    *device_monitor;
-  ThunarSendtoModel      *sendto_model;
-  XfceGtkActionEntry   *action_entry;
+  GList                    *lp;
+  gboolean                  linkable = TRUE;
+  gchar                    *label_text;
+  gchar                    *tooltip_text;
+  GtkWidget                *image;
+  GtkWidget                *item;
+  GtkWidget                *submenu;
+  GtkWidget                *window;
+  GList                    *devices;
+  GList                    *handlers;
+  GIcon                    *icon;
+  ThunarDeviceMonitor      *device_monitor;
+  ThunarSendtoModel        *sendto_model;
+  const XfceGtkActionEntry *action_entry;
 
   _thunar_return_val_if_fail (THUNAR_IS_LAUNCHER (launcher), NULL);
 
