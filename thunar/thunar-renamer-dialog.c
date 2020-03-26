@@ -831,14 +831,14 @@ thunar_renamer_dialog_append_menu_item (ThunarRenamerDialog *renamer_dialog,
                                         GtkMenuShell        *menu,
                                         ThunarRenamerAction  action)
 {
-  gchar                  *label_text;
-  gchar                  *tooltip_text;
-  XfceGtkActionEntry   *action_entry;
-  GtkWidget              *item;
+  gchar                      *label_text;
+  gchar                      *tooltip_text;
+  const XfceGtkActionEntry   *action_entry = get_action_entry (action);
+  GtkWidget                  *item;
 
   _thunar_return_val_if_fail (THUNAR_IS_RENAMER_DIALOG (renamer_dialog), NULL);
+  _thunar_return_val_if_fail (action_entry != NULL, NULL);
 
-  action_entry = get_action_entry (action);
   switch (action)
     {
       case THUNAR_RENAMER_ACTION_REMOVE_FILES:

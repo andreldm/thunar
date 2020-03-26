@@ -62,7 +62,7 @@ static void         thunar_abstract_icon_view_append_accelerators   (ThunarStand
 static void         thunar_abstract_icon_view_append_menu_items     (ThunarStandardView           *standard_view,
                                                                      GtkMenu                      *menu,
                                                                      GtkAccelGroup                *accel_group);
-static XfceGtkActionEntry *thunar_abstract_icon_view_gesture_action (ThunarAbstractIconView       *abstract_icon_view);
+static const XfceGtkActionEntry *thunar_abstract_icon_view_gesture_action (ThunarAbstractIconView       *abstract_icon_view);
 static void         thunar_abstract_icon_view_notify_model          (ExoIconView                  *view,
                                                                      GParamSpec                   *pspec,
                                                                      ThunarAbstractIconView       *abstract_icon_view);
@@ -415,7 +415,7 @@ thunar_abstract_icon_view_append_menu_items (ThunarStandardView *standard_view,
 
 
 
-static XfceGtkActionEntry*
+static const XfceGtkActionEntry*
 thunar_abstract_icon_view_gesture_action (ThunarAbstractIconView *abstract_icon_view)
 {
   GtkWidget *window;
@@ -646,8 +646,8 @@ thunar_abstract_icon_view_button_release_event (ExoIconView            *view,
                                                 GdkEventButton         *event,
                                                 ThunarAbstractIconView *abstract_icon_view)
 {
-  XfceGtkActionEntry *action_entry;
-  GtkWidget            *window;
+  const XfceGtkActionEntry *action_entry;
+  GtkWidget                *window;
 
   _thunar_return_val_if_fail (EXO_IS_ICON_VIEW (view), FALSE);
   _thunar_return_val_if_fail (THUNAR_IS_ABSTRACT_ICON_VIEW (abstract_icon_view), FALSE);
@@ -687,9 +687,9 @@ thunar_abstract_icon_view_draw (ExoIconView            *view,
                                 cairo_t                *cr,
                                 ThunarAbstractIconView *abstract_icon_view)
 {
-  XfceGtkActionEntry *action_entry = NULL;
-  GdkPixbuf  *gesture_icon = NULL;
-  gint        x, y;
+  const XfceGtkActionEntry *action_entry = NULL;
+  GdkPixbuf                *gesture_icon = NULL;
+  gint                      x, y;
 
   _thunar_return_val_if_fail (EXO_IS_ICON_VIEW (view), FALSE);
   _thunar_return_val_if_fail (THUNAR_IS_ABSTRACT_ICON_VIEW (abstract_icon_view), FALSE);

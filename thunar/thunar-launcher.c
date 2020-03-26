@@ -1150,14 +1150,13 @@ thunar_launcher_append_paste_item (ThunarLauncher *launcher,
 {
   GtkWidget                *item = NULL;
   ThunarClipboardManager   *clipboard;
-  const XfceGtkActionEntry *action_entry;
+  const XfceGtkActionEntry *action_entry = get_action_entry (THUNAR_LAUNCHER_ACTION_PASTE);
 
   _thunar_return_val_if_fail (THUNAR_IS_LAUNCHER (launcher), NULL);
+  _thunar_return_val_if_fail (action_entry != NULL, NULL);
 
   if (!force && !launcher->single_folder_selected)
     return NULL;
-
-  action_entry = get_action_entry (THUNAR_LAUNCHER_ACTION_PASTE);
 
   /* grab a reference on the clipboard manager for this display */
   clipboard = thunar_clipboard_manager_get_for_display (gtk_widget_get_display (launcher->widget));
@@ -1188,13 +1187,13 @@ thunar_launcher_append_menu_item (ThunarLauncher       *launcher,
   GtkWidget                *submenu;
   gchar                    *label_text;
   gchar                    *tooltip_text;
-  const XfceGtkActionEntry *action_entry;
+  const XfceGtkActionEntry *action_entry = get_action_entry (action);
   ThunarPreferences        *preferences;
   gboolean                  show_delete_item;
 
   _thunar_return_val_if_fail (THUNAR_IS_LAUNCHER (launcher), NULL);
+  _thunar_return_val_if_fail (action_entry != NULL, NULL);
 
-  action_entry = get_action_entry (action);
   switch (action)
     {
       case THUNAR_LAUNCHER_ACTION_OPEN: /* aka "activate" */
@@ -1556,11 +1555,14 @@ thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
       if (thunar_window_has_shortcut_sidepane (THUNAR_WINDOW (window)))
         {
           action_entry = get_action_entry (THUNAR_LAUNCHER_ACTION_SENDTO_SHORTCUTS);
-          label_text   = ngettext ("Side Pane (Create Shortcut)", "Side Pane (Create Shortcuts)", launcher->n_selected_files);
-          tooltip_text = ngettext ("Add the selected folder to the shortcuts side pane",
-                                   "Add the selected folders to the shortcuts side pane", launcher->n_selected_files);
-          item = xfce_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path,
-                                                    action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, GTK_MENU_SHELL (submenu));
+          if (action_entry != NULL)
+            {
+              label_text   = ngettext ("Side Pane (Create Shortcut)", "Side Pane (Create Shortcuts)", launcher->n_selected_files);
+              tooltip_text = ngettext ("Add the selected folder to the shortcuts side pane",
+                                       "Add the selected folders to the shortcuts side pane", launcher->n_selected_files);
+              item = xfce_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path,
+                                                        action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, GTK_MENU_SHELL (submenu));
+            }
         }
     }
 
@@ -1573,11 +1575,14 @@ thunar_launcher_build_sendto_submenu (ThunarLauncher *launcher)
   if (linkable)
     {
       action_entry = get_action_entry (THUNAR_LAUNCHER_ACTION_SENDTO_DESKTOP);
-      label_text   = ngettext ("Desktop (Create Link)", "Desktop (Create Links)", launcher->n_selected_files);
-      tooltip_text = ngettext ("Create a link to the selected file on the desktop",
-                               "Create links to the selected files on the desktop", launcher->n_selected_files);
-      item = xfce_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path,
-                                                action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, GTK_MENU_SHELL (submenu));
+      if (action_entry != NULL)
+        {
+          label_text   = ngettext ("Desktop (Create Link)", "Desktop (Create Links)", launcher->n_selected_files);
+          tooltip_text = ngettext ("Create a link to the selected file on the desktop",
+                                   "Create links to the selected files on the desktop", launcher->n_selected_files);
+          item = xfce_gtk_image_menu_item_new_from_icon_name (label_text, tooltip_text, action_entry->accel_path,
+                                                    action_entry->callback, G_OBJECT (launcher), action_entry->menu_item_icon_name, GTK_MENU_SHELL (submenu));
+        }
     }
 
   item = gtk_separator_menu_item_new ();

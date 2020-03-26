@@ -1021,12 +1021,12 @@ static void
 thunar_window_create_go_menu (ThunarWindow *window,
                               GtkWidget    *menu)
 {
-  ThunarMenu           *submenu;
-  gchar                *icon_name;
-  XfceGtkActionEntry *action_entry;
-  ThunarHistory        *history;
-  GList                *lp;
-  GtkWidget            *item;
+  ThunarMenu               *submenu;
+  gchar                    *icon_name;
+  const XfceGtkActionEntry *action_entry;
+  ThunarHistory            *history;
+  GList                    *lp;
+  GtkWidget                *item;
 
   _thunar_return_if_fail (THUNAR_IS_WINDOW (window));
 
@@ -1059,13 +1059,16 @@ thunar_window_create_go_menu (ThunarWindow *window,
               if (trash_folder != NULL)
                 {
                   action_entry = get_action_entry (THUNAR_WINDOW_ACTION_OPEN_TRASH);
-                  if (thunar_file_get_item_count (trash_folder) > 0)
-                    icon_name = "user-trash-full";
-                  else
-                    icon_name = "user-trash";
-                  xfce_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
-                                                     action_entry->accel_path, action_entry->callback, G_OBJECT (window), icon_name, GTK_MENU_SHELL (submenu));
-                  g_object_unref (trash_folder);
+                  if (action_entry != NULL)
+                    {
+                      if (thunar_file_get_item_count (trash_folder) > 0)
+                        icon_name = "user-trash-full";
+                      else
+                        icon_name = "user-trash";
+                      xfce_gtk_image_menu_item_new_from_icon_name (action_entry->menu_item_label_text, action_entry->menu_item_tooltip_text,
+                                                         action_entry->accel_path, action_entry->callback, G_OBJECT (window), icon_name, GTK_MENU_SHELL (submenu));
+                      g_object_unref (trash_folder);
+                    }
                 }
               g_object_unref (gfile);
             }
@@ -3604,12 +3607,11 @@ thunar_window_set_directories (ThunarWindow   *window,
 
 
 
-XfceGtkActionEntry*
+const XfceGtkActionEntry*
 thunar_window_get_action_entry  (ThunarWindow       *window,
                                  ThunarWindowAction  action)
 {
-  XfceGtkActionEntry *action_entry = get_action_entry (action);
-  return action_entry;
+  return get_action_entry (action);
 }
 
 
