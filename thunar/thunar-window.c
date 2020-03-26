@@ -645,9 +645,10 @@ thunar_window_init (ThunarWindow *window)
   item = xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_HELP_MENU), G_OBJECT (window), GTK_MENU_SHELL (window->menubar));
   g_signal_connect_swapped (G_OBJECT (item), "select", G_CALLBACK (thunar_window_create_help_menu), window);
   g_signal_connect_swapped (G_OBJECT (item), "deselect", G_CALLBACK (thunar_window_destroy_menu), window);
+  gtk_widget_show_all (window->menubar);
 
-  if (last_menubar_visible == TRUE)
-    gtk_widget_show (window->menubar);
+  if (last_menubar_visible == FALSE)
+    gtk_widget_hide (window->menubar);
   gtk_widget_set_hexpand (window->menubar, TRUE);
   gtk_grid_attach (GTK_GRID (window->grid), window->menubar, 0, 0, 1, 1);
 
@@ -723,7 +724,6 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   g_signal_connect_swapped (G_OBJECT (window->location_bar), "reload-requested", G_CALLBACK (thunar_window_handle_reload_request), window);
   g_signal_connect_swapped (G_OBJECT (window->location_bar), "entry-done", G_CALLBACK (thunar_window_update_location_bar_visible), window);
 
-
   /* setup the toolbar for the location bar */
   window->location_toolbar = gtk_toolbar_new ();
   gtk_toolbar_set_style (GTK_TOOLBAR (window->location_toolbar), GTK_TOOLBAR_ICONS);
@@ -736,6 +736,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   window->location_toolbar_item_forward = xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_FORWARD), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
   window->location_toolbar_item_parent = xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_PARENT), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
   xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_HOME), G_OBJECT (window), GTK_TOOLBAR (window->location_toolbar));
+
   g_signal_connect (G_OBJECT (window->location_toolbar_item_back), "button-press-event", G_CALLBACK (thunar_window_history_clicked), G_OBJECT (window));
   g_signal_connect (G_OBJECT (window->location_toolbar_item_forward), "button-press-event", G_CALLBACK (thunar_window_history_clicked), G_OBJECT (window));
   window->signal_handler_id_history_changed = 0;
@@ -745,13 +746,12 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   gtk_tool_item_set_expand (tool_item, TRUE);
   gtk_toolbar_insert (GTK_TOOLBAR (window->location_toolbar), tool_item, -1);
   gtk_toolbar_set_show_arrow (GTK_TOOLBAR (window->location_toolbar), FALSE);
-  gtk_widget_show (GTK_WIDGET (tool_item));
 
   /* add the location bar itself */
   gtk_container_add (GTK_CONTAINER (tool_item), window->location_bar);
 
-  /* display the new location bar widget */
-  gtk_widget_show (window->location_bar);
+  /* display the toolbar */
+  gtk_widget_show_all (window->location_toolbar);
 
   g_free (last_location_bar);
 
@@ -872,6 +872,7 @@ thunar_window_create_file_menu (ThunarWindow *window, GtkWidget *menu)
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_TAB), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CLOSE_WINDOW), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
+      gtk_widget_show_all (GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
 
@@ -930,6 +931,7 @@ thunar_window_create_edit_menu (ThunarWindow *window,
         }
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_PREFERENCES), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
+      gtk_widget_show_all (GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
 
@@ -970,7 +972,6 @@ thunar_window_create_view_menu (ThunarWindow *window,
                                                      G_OBJECT (window), exo_str_is_equal (last_location_bar, g_type_name (THUNAR_TYPE_LOCATION_BUTTONS)), GTK_MENU_SHELL (sub_items));
       g_free (last_location_bar);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (sub_items));
-      gtk_widget_show (item);
       item = xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_SIDE_PANE_MENU), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       sub_items =  gtk_menu_new();
       gtk_menu_set_accel_group (GTK_MENU (sub_items), window->accel_group);
@@ -981,7 +982,6 @@ thunar_window_create_view_menu (ThunarWindow *window,
                                                      G_OBJECT (window), exo_str_is_equal (last_side_pane, g_type_name (THUNAR_TYPE_TREE_PANE)), GTK_MENU_SHELL (sub_items));
       g_free (last_side_pane);
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (sub_items));
-      gtk_widget_show (item);
       xfce_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_STATUSBAR),
                                                      G_OBJECT (window), gtk_widget_get_visible (window->statusbar), GTK_MENU_SHELL (submenu));
       xfce_gtk_toggle_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_VIEW_MENUBAR),
@@ -1007,6 +1007,7 @@ thunar_window_create_view_menu (ThunarWindow *window,
       g_free (last_view);
 
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
+      gtk_widget_show_all (GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
 
@@ -1088,6 +1089,7 @@ thunar_window_create_go_menu (ThunarWindow *window,
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_NETWORK), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (submenu));
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_OPEN_LOCATION), G_OBJECT (window), GTK_MENU_SHELL (submenu));
+      gtk_widget_show_all (GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
 
@@ -1114,6 +1116,7 @@ thunar_window_create_help_menu (ThunarWindow *window,
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_CONTENTS), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       xfce_gtk_menu_item_new_from_action_entry (get_action_entry (THUNAR_WINDOW_ACTION_ABOUT), G_OBJECT (window), GTK_MENU_SHELL (submenu));
       gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), GTK_WIDGET (submenu));
+      gtk_widget_show_all (GTK_WIDGET (submenu));
 
       thunar_window_redirect_menu_tooltips_to_statusbar (window, GTK_MENU (submenu));
 

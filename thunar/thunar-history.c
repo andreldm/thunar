@@ -602,6 +602,7 @@ thunar_history_show_menu (ThunarHistory         *history,
 
           image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
         }
+
       /* add an item for this file */
       display_name = g_object_get_qdata (G_OBJECT (lp->data), thunar_history_display_name_quark);
       item = xfce_gtk_image_menu_item_new (display_name, parse_name, NULL,

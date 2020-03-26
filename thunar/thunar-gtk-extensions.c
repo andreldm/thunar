@@ -263,5 +263,3 @@ thunar_gtk_mount_operation_new (gpointer parent)
 
   return operation;
 }
-
-

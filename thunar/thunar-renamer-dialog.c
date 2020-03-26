@@ -381,6 +381,7 @@ thunar_renamer_dialog_init (ThunarRenamerDialog *renamer_dialog)
   xfce_gtk_tool_button_new_from_action_entry (get_action_entry (THUNAR_RENAMER_ACTION_ABOUT), G_OBJECT (renamer_dialog), GTK_TOOLBAR (toolbar));
   exo_binding_new (G_OBJECT (renamer_dialog), "standalone", G_OBJECT (toolbar), "visible");
   gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (renamer_dialog))), toolbar, FALSE, FALSE, 0);
+  gtk_widget_show_all (GTK_WIDGET (toolbar));
 
   /* create the main vbox */
   mbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
@@ -898,6 +899,7 @@ thunar_renamer_dialog_context_menu (ThunarRenamerDialog *renamer_dialog)
   thunar_renamer_dialog_append_menu_item (renamer_dialog, GTK_MENU_SHELL (menu), THUNAR_RENAMER_ACTION_REMOVE_FILES);
   xfce_gtk_menu_append_seperator (GTK_MENU_SHELL (menu));
   thunar_menu_add_sections (menu, THUNAR_MENU_SECTION_PROPERTIES);
+  gtk_widget_show_all (GTK_WIDGET (menu));
 
   thunar_menu_run (menu);
 
