@@ -3148,8 +3148,6 @@ static void
 thunar_window_current_directory_changed (ThunarFile   *current_directory,
                                          ThunarWindow *window)
 {
-  GtkIconTheme *icon_theme;
-  const gchar  *icon_name;
   gchar        *title;
   gboolean      show_full_path;
   gchar        *parse_name = NULL;
